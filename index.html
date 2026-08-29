@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Академия звёздных математиков</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@1,700&family=Lobster&family=Russo+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="planet-scene">
+  <div class="planet-bg-image" id="planet-bg-image"></div>
+  <div class="planet-overlay"></div>
+</div>
+
+<div class="splash-screen" id="splash-intro">
+  <div class="splash-stars-bg" id="splash-stars-bg"></div>
+  <div class="splash-stars-overlay"></div>
+  <div class="splash-line fire-text" id="splash-line-1">Академия звёздных математиков</div>
+  <div class="splash-line gold-text" id="splash-line-2">Приветствует тебя</div>
+  <div class="splash-line pilot-text" id="splash-line-3">Юный Пилот</div>
+</div>
+
+<!-- ПАНЕЛИ ВЫНЕСЕНЫ НА УРОВЕНЬ BODY -->
+<div class="leaderboard-side hidden" id="leaderboard-side">
+  <div class="leaderboard-side-header">
+    <span class="lb-icon">🏆</span>
+    <h3>ТОП ПИЛОТОВ</h3>
+  </div>
+  <div class="leaderboard-side-list" id="menu-leaderboard"></div>
+</div>
+
+<div class="definitions-side hidden" id="definitions-side">
+  <div class="definitions-side-header">
+    <span class="def-icon">📚</span>
+    <h3>МАТЕМАТИКА 1 КЛАСС</h3>
+  </div>
+  <div class="definitions-content" id="definitions-content">
+    <div class="definition-item">
+      <div class="def-title">Число</div>
+      <div class="def-text">Число — это понятие, с помощью которого обозначают количество предметов</div>
+    </div>
+  </div>
+</div>
+
+<button id="btn-lb-mobile" class="btn-lb-mobile">🏆 Топ пилотов</button>
+<button id="btn-ref-mobile" class="btn-ref-mobile"> Справочник</button>
+
+<div id="screen-login" class="hidden">
+  <div class="login-bg-image"></div>
+  <div class="login-intro-text" id="login-text-1">Звёзды жаждут узнать твоё имя</div>
+  <div class="login-intro-text" id="login-text-2a">Впиши его в скрижали</div>
+  <div class="login-intro-text" id="login-text-2c"><span class="galactic-word">Галактической</span></div>
+  <div class="login-intro-text" id="login-text-2d"><span class="galactic-word">Истории</span></div>
+  <div class="login-intro-text" id="login-text-3">Выбери свой профиль или создай новый</div>
+  <div class="login-content hidden" id="login-content">
+    <input type="text" id="new-player-name" class="name-input" placeholder="Создай профиль" maxlength="20">
+    <button id="btn-create-player" class="game-btn btn-primary">Создать профиль</button>
+    <div class="login-divider">— или выбери своё имя —</div>
+    <div class="players-list" id="players-list"></div>
+  </div>
+</div>
+
+<div id="screen-menu" class="screen hidden">
+  <div class="player-header">
+    <span id="menu-player-name">Привет, Пилот!</span>
+    <div class="stats-row">
+      <span class="stat-badge">⭐ <span id="menu-stars">0</span></span>
+      <span class="stat-badge">❤️ <span id="menu-lives">3</span></span>
+      <span class="stat-badge">🔥 <span id="menu-streak">0</span> дн.</span>
+      <span class="stat-badge"> <span id="menu-retries">3</span></span>
+    </div>
+  </div>
+  <div class="current-level-display" id="current-level-display">Уровень 1: Первый контакт</div>
+  <div class="daily-bonus-banner hidden" id="daily-bonus-banner"> Тебя ждёт ежедневный бонус!</div>
+  <div class="buttons-container">
+    <button id="btn-play" class="game-btn btn-play">🚀 Играть</button>
+    <button id="btn-training" class="game-btn btn-training">🎯 Тренировка</button>
+    <button id="btn-cabinet" class="game-btn btn-cabinet">🏅 Мои награды</button>
+    <button id="btn-rules" class="game-btn btn-rules"> Правила</button>
+    <button id="btn-settings" class="game-btn btn-settings">⚙️ Настройки</button>
+    <button id="btn-logout" class="game-btn btn-secondary"> Выйти в главное меню</button>
+  </div>
+</div>
+
+<div id="screen-game" class="screen hidden">
+  <div class="game-header">
+    <div class="session-timer-container">
+      <div class="session-timer-label">Общее время</div>
+      <div class="session-timer" id="session-timer">3:20</div>
+    </div>
+    <div class="progress-info">
+      <span>Решено: <span id="correct-count">0</span> / <span id="target-count">20</span></span>
+      <span class="lives-display" id="game-lives">❤️❤️❤️</span>
+    </div>
+    <div class="timer-bar">
+      <div class="timer-fill" id="timer-fill"></div>
+      <div class="timer-text" id="timer-text">20</div>
+    </div>
+  </div>
+  <div class="question-container" id="question-container">
+    <div class="question-text">Загрузка...</div>
+  </div>
+  <div class="options-grid" id="options-grid"></div>
+  <button id="btn-quit-game" class="game-btn btn-secondary">Выйти в меню</button>
+</div>
+
+<div id="screen-results" class="screen hidden">
+  <h1 class="results-title" id="results-title">Отлично!</h1>
+  <div class="results-medal" id="results-medal">🏆</div>
+  <div class="results-stats">
+    <div class="stat-box"><div class="val" id="res-correct">0</div><div class="lbl">Правильных</div></div>
+    <div class="stat-box"><div class="val" id="res-stars">+0</div><div class="lbl">Звёзд получено</div></div>
+    <div class="stat-box"><div class="val" id="res-total">0</div><div class="lbl">Всего звёзд</div></div>
+  </div>
+  <div class="results-message" id="results-message"></div>
+  <div class="results-bonuses" id="results-bonuses" style="display:none;"></div>
+  <div class="buttons-container">
+    <button id="btn-play-again" class="game-btn btn-play">Играть ещё</button>
+    <button id="btn-back-menu" class="game-btn btn-secondary">В меню</button>
+  </div>
+</div>
+
+<div id="screen-cabinet" class="screen hidden">
+  <h1 class="game-title">🏅 Кабинет пилота</h1>
+  <div class="cabinet-stats">
+    <div class="stat-box"><div class="val" id="cabinet-player-name">Пилот</div><div class="lbl">Имя</div></div>
+    <div class="stat-box"><div class="val" id="cab-stars">0</div><div class="lbl">⭐ Всего звёзд</div></div>
+    <div class="stat-box"><div class="val" id="cab-streak">0</div><div class="lbl">🔥 Дней подряд</div></div>
+    <div class="stat-box"><div class="val" id="cab-last-level">0</div><div class="lbl">📊 Последний уровень</div></div>
+    <div class="stat-box"><div class="val" id="cab-retries">3</div><div class="lbl">🔄 Попыток сегодня</div></div>
+  </div>
+  <div class="settings-section">
+    <h3 style="color: var(--warning); margin-bottom: 10px;">🏆 Локальный лидерборд</h3>
+    <div class="leaderboard-list" id="leaderboard-list"></div>
+  </div>
+  <button id="btn-back-cabinet" class="game-btn btn-secondary">В меню</button>
+</div>
+
+<div id="screen-settings" class="screen hidden">
+  <h1 class="settings-title">️ Настройки</h1>
+  <div class="settings-section">
+    <div class="settings-label">Выбери уровень</div>
+    <div class="level-selector" id="level-selector"></div>
+  </div>
+  <div class="settings-section">
+    <div class="toggle-container">
+      <span>🔊 Звуки</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="sound-toggle" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+  <div class="settings-section" id="reset-section" style="display:none;">
+    <div class="settings-label" style="color: var(--accent-secondary);">⚠️ Опасная зона</div>
+    <button id="btn-reset-progress" class="game-btn btn-danger">Сбросить весь прогресс</button>
+  </div>
+  <button id="btn-back-settings" class="game-btn btn-secondary">Назад в меню</button>
+</div>
+
+<div class="modal-overlay hidden" id="modal-rules">
+  <div class="modal modal-rules">
+    <h2> Правила путешествия</h2>
+    <div class="rules-body">
+      <p><b>1.</b> Каждая планета — это уровень .</p>
+      <p><b>2.</b> Реши 20 задачек правильно (на МЕГА-экзамене — 30) — и лети 🚀.</p>
+      <p><b>3.</b> В любом уровне два таймера: общее время и время на задание.</p>
+      <p><b>4.</b> Если время задания вышло — ошибка, но общее время тикает.</p>
+      <p><b>5.</b> Если общее время вышло — теряешь жизнь ❤️.</p>
+      <p><b>6.</b> У тебя 3 жизни. Восстанавливаются каждый день.</p>
+      <p><b>7.</b> Бонусы: +20 ⭐ за идеальную серию, +30 ⭐ за скорость, ×2 за МЕГА-экзамен.</p>
+      <p><b>8.</b> Звёзды — твой рейтинг. Соревнуйся с другими!</p>
+      <p><b>9.</b> Тренировка 🎯 не тратит жизни и не даёт звёзд.</p>
+      <p><b>10.</b> Ежедневный бонус 🎁 и бонус за серию 🔥.</p>
+      <p><b>11.</b> Покори планету Корония 👑 и получи диплом!</p>
+    </div>
+    <button id="btn-close-rules" class="game-btn btn-primary">Понятно, летим!</button>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="modal-daily">
+  <div class="modal">
+    <h2>🎁 Отличная работа!</h2>
+    <p style="color: var(--text-secondary); margin: 10px 0;">Ты зашёл в игру <span id="modal-streak-days">1</span> день подряд!</p>
+    <div class="reward-display">+<span id="modal-stars-earned">20</span> звёзд</div>
+    <div id="modal-retries-info" style="color: var(--text-secondary); margin: 10px 0; font-size: 0.95rem;"></div>
+    <div class="badge-msg hidden" id="modal-badge-msg"></div>
+    <button id="btn-claim-daily" class="game-btn btn-primary">Забрать награду!</button>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="modal-reset">
+  <div class="modal">
+    <h2>🔒 Родительский контроль</h2>
+    <p style="color: var(--text-secondary); margin: 10px 0;">Реши пример за 10 секунд:</p>
+    <div class="parental-gate-math" id="gate-math-question">10 + 20 = ?</div>
+    <input type="number" id="gate-math-input" class="name-input" placeholder="Ответ" autocomplete="off">
+    <div class="gate-timer-container">
+      <div class="gate-timer-bar"><div class="gate-timer-fill" id="gate-timer-fill"></div></div>
+      <div class="gate-timer-text" id="gate-timer-text">10.0</div>
+    </div>
+    <div class="badge-msg hidden" id="gate-math-error" style="color: var(--accent-secondary);">❌ Неверно!</div>
+    <div class="buttons-container">
+      <button id="btn-confirm-reset" class="game-btn btn-danger">Подтвердить сброс</button>
+      <button id="btn-cancel-reset" class="game-btn btn-secondary">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="modal-training">
+  <div class="modal">
+    <h2>🎯 Режим тренировки</h2>
+    <p style="color: var(--text-secondary); margin: 10px 0;">Выбери уровень. Прогресс не сохраняется.</p>
+    <div class="training-level-list" id="training-level-list"></div>
+    <button id="btn-close-training" class="game-btn btn-secondary">Отмена</button>
+  </div>
+</div>
+
+<canvas id="particles-canvas"></canvas>
+
+<script src="script.js"></script>
+</body>
+</html>

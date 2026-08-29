@@ -1,1527 +1,1992 @@
-/* ============================================
+/**
 АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v5.0
-Стили приложения
-============================================ */
-:root {
-  --bg-primary: #090a0f;
-  --bg-secondary: #1b2735;
-  --text-primary: #ffffff;
-  --text-secondary: #a8d8ff;
-  --accent-primary: #00c9ff;
-  --accent-secondary: #f5576c;
-  --success: #96c93d;
-  --warning: #ffe4a0;
-  --font-main: 'Segoe UI', Arial, sans-serif;
-}
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-body {
-  min-height: 100vh;
-  font-family: var(--font-main);
-  background: #000;
-  color: var(--text-primary);
-  overflow-x: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 16px;
-}
-.planet-scene {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  overflow: hidden;
-}
-.planet-bg-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  transition: opacity 1s ease, background-image 1s ease;
-  animation: slowZoom 30s ease-in-out infinite alternate;
-}
-.planet-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
-  pointer-events: none;
-}
-@keyframes slowZoom {
-  from { transform: scale(1); }
-  to { transform: scale(1.1); }
-}
-.splash-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  z-index: 200;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  transition: opacity 1.5s ease;
-}
-.splash-screen.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-.splash-stars-bg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 170vmax;
-  height: 170vmax;
-  margin: -85vmax 0 0 -85vmax;
-  background-image: url('backgrounds/stars-bg.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0;
-}
-.splash-stars-bg.animate-in {
-  animation: starsBgAppear 2s ease-out forwards;
-}
-@keyframes starsBgAppear {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-.splash-stars-bg.animate-rotate {
-  opacity: 1;
-  animation: starsBgRotate 60s linear infinite;
-}
-@keyframes starsBgRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(-360deg); }
-}
-.splash-stars-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background:
-    radial-gradient(1px 1px at 10% 20%, #fff, transparent),
-    radial-gradient(1.5px 1.5px at 20% 50%, #fff, transparent),
-    radial-gradient(1px 1px at 30% 10%, #fff, transparent),
-    radial-gradient(2px 2px at 40% 80%, #fff, transparent),
-    radial-gradient(1px 1px at 50% 30%, #fff, transparent),
-    radial-gradient(1.5px 1.5px at 60% 70%, #fff, transparent),
-    radial-gradient(1px 1px at 70% 40%, #fff, transparent),
-    radial-gradient(2px 2px at 80% 90%, #fff, transparent),
-    radial-gradient(1px 1px at 90% 15%, #fff, transparent),
-    radial-gradient(1.5px 1.5px at 15% 75%, #fff, transparent),
-    radial-gradient(1px 1px at 25% 35%, #fff, transparent),
-    radial-gradient(2px 2px at 35% 65%, #fff, transparent),
-    radial-gradient(1px 1px at 45% 5%, #fff, transparent),
-    radial-gradient(1.5px 1.5px at 55% 55%, #fff, transparent),
-    radial-gradient(1px 1px at 65% 25%, #fff, transparent),
-    radial-gradient(2px 2px at 75% 85%, #fff, transparent),
-    radial-gradient(1px 1px at 85% 45%, #fff, transparent),
-    radial-gradient(1.5px 1.5px at 95% 60%, #fff, transparent),
-    radial-gradient(1px 1px at 5% 95%, #fff, transparent),
-    radial-gradient(2px 2px at 12% 42%, #fff, transparent);
-  opacity: 0.6;
-  animation: starsTwinkle 3s ease-in-out infinite alternate;
-}
-@keyframes starsTwinkle {
-  from { opacity: 0.4; }
-  to { opacity: 0.8; }
-}
-.splash-line {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 92%;
-  text-align: center;
-  font-weight: 900;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 10;
-  line-height: 1.25;
-}
-#splash-line-1 {
-  top: 40%;
-  font-size: clamp(1.6rem, 6vw, 3.4rem);
-  letter-spacing: 2px;
-  font-family: 'Russo One', sans-serif;
-}
-#splash-line-2 {
-  top: 52%;
-  font-size: clamp(2.2rem, 7.5vw, 4rem);
-  letter-spacing: 4px;
-  font-family: 'Cormorant', serif;
-  font-style: italic;
-  font-weight: 900;
-}
-#splash-line-3 {
-  top: 50%;
-  font-size: clamp(2rem, 7.5vw, 4rem);
-  letter-spacing: 4px;
-  font-family: 'Lobster', cursive;
-}
-.fire-text {
-  background: linear-gradient(90deg, #ff2d00 0%, #ff7a00 22%, #ffd700 45%, #ff5e00 68%, #ff2d00 100%);
-  background-size: 220% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-#splash-line-1.animate-in {
-  animation: lineAppearSlow 2.6s ease-out forwards, fireFlow 3s linear infinite;
-  filter: drop-shadow(0 0 8px rgba(255,80,0,.9)) drop-shadow(0 0 22px rgba(255,150,0,.6)) drop-shadow(0 0 40px rgba(255,210,0,.35));
-}
-@keyframes fireFlow {
-  0% { background-position: 0% center; }
-  100% { background-position: 220% center; }
-}
-.gold-text {
-  color: #FFD700;
-  text-shadow: 0 0 18px rgba(255,215,0,1), 0 0 40px rgba(255,180,0,.9), 0 0 60px rgba(255,150,0,.6);
-}
-#splash-line-2.animate-in {
-  animation: lineAppearSoft 1.4s ease-out forwards;
-}
-.pilot-text {
-  color: #0044FF;
-  text-shadow: 0 0 16px rgba(0,68,255,.95), 0 0 40px rgba(0,50,200,.7);
-}
-#splash-line-3.animate-in {
-  animation: lineDepth 2s cubic-bezier(.2,.8,.3,1) forwards;
-}
-@keyframes lineDepth {
-  0% { opacity: 0; transform: translate(-50%,-50%) scale(.15); filter: blur(24px); }
-  60% { opacity: 1; transform: translate(-50%,-50%) scale(1.08); filter: blur(0); }
-  100% { opacity: 1; transform: translate(-50%,-50%) scale(1); }
-}
-@keyframes lineAppearSlow {
-  0% { opacity: 0; transform: translate(-50%,-50%) scale(.5); filter: blur(16px); }
-  55% { opacity: 1; transform: translate(-50%,-50%) scale(1.06); filter: blur(0); }
-  100% { opacity: 1; transform: translate(-50%,-50%) scale(1); }
-}
-@keyframes lineAppearSoft {
-  0% { opacity: 0; transform: translate(-50%,-40%); }
-  100% { opacity: 1; transform: translate(-50%,-50%); }
-}
-.splash-line.animate-out {
-  animation: lineOut .8s ease-in forwards !important;
-}
-@keyframes lineOut {
-  0% { opacity: 1; }
-  100% { opacity: 0; filter: blur(8px); }
-}
-#screen-login {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  z-index: 10;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.login-bg-image {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('backgrounds/login-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: -2;
-}
-.login-bg-image::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.4);
-}
-.login-intro-text {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -40%);
-  font-size: clamp(1.6rem, 5vw, 3rem);
-  font-weight: 700;
-  font-family: 'Cormorant', serif;
-  font-style: italic;
-  color: #ffd76a;
-  text-shadow: 0 0 16px rgba(255,205,90,.85), 0 0 36px rgba(255,180,50,.5);
-  text-align: center;
-  width: 90%;
-  max-width: 900px;
-  z-index: 15;
-  pointer-events: none;
-  opacity: 0;
-  white-space: normal;
-  line-height: 1.4;
-  transition: opacity 1.4s ease, transform 1.4s ease;
-}
-.login-text-rich {
-  color: #ffb300;
-  text-shadow: 0 0 18px rgba(255,170,0,.95), 0 0 44px rgba(255,150,0,.65);
-}
-.login-text-call {
-  color: #ffe9a8;
-  text-shadow: 0 0 14px rgba(255,220,120,.8), 0 0 30px rgba(255,200,80,.45);
-}
-.galactic-word {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-style: italic;
-  font-weight: 700;
-  color: #ff2400;
-  text-shadow: 0 0 14px rgba(255,36,0,.8), 0 0 30px rgba(255,36,0,.45);
-  letter-spacing: .05em;
-}
-.login-intro-text.visible {
-  opacity: 1;
-  transform: translate(-50%, -120%);
-}
-.login-intro-text.fade-out {
-  opacity: 0;
-  transform: translate(-50%, -120%);
-}
-.login-content {
-  position: relative;
-  z-index: 20;
-  width: 100%;
-  max-width: 450px;
-  text-align: center;
-  padding: 20px;
-  opacity: 1;
-  transition: opacity 1s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-.login-content.hidden {
-  display: none !important;
-}
-.login-content .name-input {
-  width: 100%;
-  max-width: 380px;
-  margin-bottom: 0;
-}
-.login-content .game-btn {
-  width: 100%;
-  max-width: 380px;
-}
-.login-content .players-list {
-  width: 100%;
-  max-width: 380px;
-  margin-top: 4px;
-  margin-bottom: 0;
-}
-.login-divider {
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 4px 0;
-  letter-spacing: 1px;
-  opacity: 0.85;
-}
-.screen {
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  max-width: 450px;
-  text-align: center;
-  animation: fadeIn 0.5s ease-out;
-  margin: auto;
-}
-.hidden {
-  display: none !important;
-}
-.game-title {
-  font-size: clamp(1.6rem, 6vw, 2.6rem);
-  font-weight: 900;
-  font-family: 'Russo One', sans-serif;
-  text-shadow: 0 0 10px #fff, 0 0 20px var(--accent-primary);
-  margin-bottom: 16px;
-}
-.subtitle {
-  color: var(--text-secondary);
-  margin-bottom: 24px;
-  font-size: 1.1rem;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
-}
-.players-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-.player-card {
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255,255,255,0.2);
-  padding: 16px;
-  border-radius: 16px;
-  cursor: pointer;
-  transition: transform 0.2s, background 0.2s;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #fff;
-}
-.player-card:hover {
-  transform: scale(1.03);
-  background: rgba(0,0,0,0.8);
-}
-.player-card .name {
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-.player-card .info {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
-.name-input {
-  width: 100%;
-  padding: 16px;
-  font-size: 1.1rem;
-  border: 2px solid rgba(255,255,255,0.3);
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
-  color: #fff;
-  border-radius: 14px;
-  margin-bottom: 16px;
-  text-align: center;
-  outline: none;
-}
-.name-input:focus {
-  border-color: var(--accent-primary);
-}
-.name-input::placeholder {
-  color: rgba(255,255,255,0.5);
-}
-.buttons-container {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-top: 20px;
-}
-.game-btn {
-  padding: 16px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #fff;
-  border: none;
-  border-radius: 16px;
-  cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  backdrop-filter: blur(5px);
-}
-.game-btn:active {
-  transform: scale(0.96);
-}
-.game-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none !important;
-}
-.btn-primary {
-  background: linear-gradient(135deg, #00b09b, #96c93d);
-  box-shadow: 0 4px 15px rgba(150,201,61,0.4);
-}
-.btn-play {
-  background: linear-gradient(135deg, #00c9ff, #0076ff);
-  box-shadow: 0 4px 15px rgba(0,118,255,0.4);
-  font-size: 1.3rem;
-  padding: 20px;
-}
-.btn-cabinet {
-  background: linear-gradient(135deg, #f093fb, #f5576c);
-  box-shadow: 0 4px 15px rgba(245,87,108,0.4);
-}
-.btn-settings {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  box-shadow: 0 4px 15px rgba(118,75,162,0.4);
-}
-.btn-secondary {
-  background: rgba(0,0,0,0.5);
-  border: 2px solid rgba(255,255,255,0.3);
-  font-size: 1rem;
-  text-transform: none;
-}
-.btn-danger {
-  background: linear-gradient(135deg, #ff416c, #ff4b2b);
-  box-shadow: 0 4px 15px rgba(255,65,108,0.4);
-}
-.btn-training {
-  background: linear-gradient(135deg, #ff9800, #ffc107);
-  box-shadow: 0 4px 15px rgba(255,152,0,0.4);
-  font-size: 1.2rem;
-  padding: 18px;
-}
-.btn-rules {
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
-  box-shadow: 0 4px 15px rgba(0,242,254,.4);
-}
-.player-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(10px);
-  padding: 12px 16px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.15);
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.player-header span {
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-.stats-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.stat-badge {
-  background: rgba(255,255,255,0.15);
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  border: 1px solid rgba(255,255,255,0.2);
-}
-.current-level-display {
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
-  border: 2px solid var(--accent-primary);
-  padding: 14px 20px;
-  border-radius: 14px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin: 15px 0;
-  text-align: center;
-  box-shadow: 0 4px 15px rgba(0,201,255,0.3);
-  animation: pulse 3s infinite;
-}
-.daily-bonus-banner {
-  background: linear-gradient(90deg, #ffe4a0, #ff9800);
-  color: #000;
-  padding: 12px;
-  border-radius: 12px;
-  font-weight: 800;
-  margin: 15px 0;
-  animation: pulse 2s infinite;
-  cursor: pointer;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-}
-@keyframes pulse-danger {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-}
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
-}
-@keyframes bonusAppear {
-  0% { opacity: 0; transform: translateY(-10px) scale(0.9); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes slideInLeft {
-  from { transform: translateX(-120%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-@keyframes slideInRight {
-  from { transform: translateX(120%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-@keyframes definitionFadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes bossPulse {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.05); }
-}
-@keyframes bossLevelGlow {
-  0%, 100% { box-shadow: 0 0 15px rgba(255,215,0,0.3); }
-  50% { box-shadow: 0 0 25px rgba(255,215,0,0.6); }
-}
-.game-header {
-  margin-bottom: 20px;
-}
-.session-timer-container {
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
-  padding: 12px;
-  border-radius: 12px;
-  margin-bottom: 12px;
-  border: 2px solid rgba(255,255,255,0.15);
-}
-.session-timer-label {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 4px;
-}
-.session-timer {
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: var(--warning);
-  font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 10px var(--warning);
-}
-.session-timer.danger {
-  color: #ff4b2b !important;
-  text-shadow: 0 0 15px #ff4b2b !important;
-  animation: pulse-danger 0.5s ease-in-out infinite;
-}
-.progress-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
-  padding: 12px;
-  border-radius: 12px;
-  margin-bottom: 12px;
-  font-size: 1rem;
-  font-weight: 700;
-  border: 1px solid rgba(255,255,255,0.15);
-}
-.lives-display {
-  font-size: 1.2rem;
-  letter-spacing: 2px;
-}
-.timer-bar {
-  position: relative;
-  width: 100%;
-  height: 10px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 10px;
-  overflow: visible;
-  margin-bottom: 8px;
-}
-.timer-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background: linear-gradient(90deg, var(--success), var(--warning), var(--accent-secondary));
-  width: 100%;
-  border-radius: 10px;
-  transition: width 0.1s linear;
-}
-.timer-text {
-  position: absolute;
-  top: -28px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: var(--warning);
-  text-shadow: 0 0 10px var(--warning);
-  margin: 0;
-  white-space: nowrap;
-}
-.question-container {
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
-  padding: 24px;
-  border-radius: 20px;
-  margin-bottom: 20px;
-  border: 2px solid rgba(255,255,255,0.2);
-  min-height: 140px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-}
-.question-story {
-  font-size: clamp(1rem, 3.5vw, 1.3rem);
-  font-weight: 600;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  text-align: center;
-  font-style: italic;
-  padding: 8px 12px;
-  background: rgba(0,201,255,0.08);
-  border-left: 3px solid var(--accent-primary);
-  border-radius: 8px;
-  width: 100%;
-}
-.question-visual {
-  font-size: clamp(2rem, 8vw, 3.5rem);
-  line-height: 1.2;
-  letter-spacing: 6px;
-  text-align: center;
-  word-break: break-word;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  padding: 8px;
-  max-width: 100%;
-  filter: drop-shadow(0 4px 12px rgba(255,215,0,0.3));
-}
-.question-text {
-  font-size: clamp(1.3rem, 5vw, 2rem);
-  font-weight: 800;
-  color: var(--text-primary);
-  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-  text-align: center;
-}
-.options-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-.option-btn {
-  padding: 24px;
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #fff;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255,255,255,0.2);
-  border-radius: 16px;
-  cursor: pointer;
-  transition: transform 0.15s, background 0.3s;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-}
-.option-btn:hover:not(:disabled) {
-  transform: translateY(-3px) scale(1.03);
-  background: rgba(0,0,0,0.8);
-}
-.option-btn:active:not(:disabled) {
-  transform: scale(0.96);
-}
-.option-btn.correct {
-  background: linear-gradient(135deg, #00b09b, #96c93d) !important;
-  animation: pulse 0.5s;
-  border-color: var(--success);
-}
-.option-btn.wrong {
-  background: linear-gradient(135deg, #ff416c, #ff4b2b) !important;
-  animation: shake 0.5s;
-  border-color: var(--accent-secondary);
-}
-.option-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-.option-btn.option-symbol {
-  font-size: 2.2rem;
-  padding: 20px;
-  letter-spacing: 2px;
-}
-/* v5.0 (1.2): иконки на кнопках ответов */
-.option-with-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-.option-icon {
-  font-size: 1.4rem;
-  filter: drop-shadow(0 2px 6px rgba(255,215,0,0.4));
-}
-.results-title {
-  font-size: 2rem;
-  margin-bottom: 20px;
-  color: var(--warning);
-  text-shadow: 0 0 15px var(--warning);
-}
-.results-medal {
-  font-size: 5rem;
-  margin: 20px 0;
-  animation: fadeIn 0.8s ease-out;
-}
-.results-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin: 20px 0;
-}
-.results-message {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  margin: 15px 0;
-  font-weight: 600;
-}
-.results-bonuses {
-  background: linear-gradient(135deg, rgba(150,201,61,0.15), rgba(0,201,255,0.15));
-  border: 2px solid var(--success);
-  border-radius: 14px;
-  padding: 14px;
-  margin: 15px 0;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--success);
-  text-shadow: 0 0 8px rgba(150,201,61,0.5);
-  line-height: 1.6;
-  animation: bonusAppear 0.6s ease-out;
-}
-.cabinet-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 20px 0;
-}
-.stat-box {
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
-  padding: 16px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.15);
-}
-.stat-box .val {
-  font-size: 2rem;
-  font-weight: 900;
-  color: var(--warning);
-}
-.stat-box .lbl {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-top: 4px;
-}
-.diploma-box {
-  background: linear-gradient(135deg, rgba(255,215,0,.16), rgba(255,180,0,.08));
-  border: 2px solid #ffd700;
-  border-radius: 16px;
-  padding: 16px;
-  margin: 16px 0;
-  text-align: center;
-  box-shadow: 0 0 20px rgba(255,215,0,.3);
-}
-.diploma-title {
-  font-family: 'Russo One', sans-serif;
-  color: #ffd700;
-  font-size: 1.2rem;
-  letter-spacing: 2px;
-  text-shadow: 0 0 12px rgba(255,215,0,.7);
-  margin-bottom: 8px;
-}
-.diploma-text {
-  color: var(--text-secondary);
-  font-size: .95rem;
-  line-height: 1.5;
-}
-.diploma-text b {
-  color: #fff;
-}
-.leaderboard-list {
-  text-align: left;
-  margin-top: 10px;
-}
-.lb-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  background: rgba(0,0,0,0.5);
-  border-radius: 10px;
-  margin-bottom: 8px;
-  border: 1px solid rgba(255,255,255,0.1);
-  font-size: 0.9rem;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-.lb-item.top-1 {
-  border: 2px solid #ffd700;
-  background: rgba(255,215,0,0.15);
-  box-shadow: 0 0 10px rgba(255,215,0,0.3);
-}
-.lb-item.top-2 {
-  border: 2px solid #c0c0c0;
-  background: rgba(192,192,192,0.1);
-}
-.lb-item.top-3 {
-  border: 2px solid #cd7f32;
-  background: rgba(205,127,50,0.1);
-}
-.lb-empty {
-  text-align: center;
-  color: var(--text-secondary);
-  padding: 20px;
-  font-style: italic;
-}
-.leaderboard-side {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  width: 280px;
-  max-height: calc(100vh - 40px);
-  background: rgba(10,15,30,0.85);
-  backdrop-filter: blur(15px);
-  border: 2px solid rgba(0,201,255,0.4);
-  border-radius: 20px;
-  padding: 20px;
-  z-index: 15;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 20px rgba(0,201,255,0.2);
-  overflow-y: auto;
-  animation: slideInLeft 0.5s ease-out;
-}
-.leaderboard-side-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid rgba(0,201,255,0.3);
-}
-.leaderboard-side-header .lb-icon {
-  font-size: 1.8rem;
-  filter: drop-shadow(0 0 8px rgba(255,215,0,0.6));
-}
-.leaderboard-side-header h3 {
-  font-size: 1.1rem;
-  font-weight: 900;
-  color: var(--warning);
-  letter-spacing: 2px;
-  text-shadow: 0 0 10px rgba(255,228,160,0.5);
-  margin: 0;
-}
-.leaderboard-side-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.leaderboard-side-list .lb-item {
-  background: rgba(0,0,0,0.5);
-  padding: 10px 12px;
-  font-size: 0.85rem;
-}
-.leaderboard-side-list .lb-item span:first-child {
-  font-weight: 700;
-  color: #fff;
-}
-.leaderboard-side-list .lb-item span:last-child {
-  color: var(--warning);
-  font-weight: 800;
-}
-.definitions-side {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 320px;
-  max-height: calc(100vh - 40px);
-  background: rgba(10,15,30,0.85);
-  backdrop-filter: blur(15px);
-  border: 2px solid rgba(0,201,255,0.4);
-  border-radius: 20px;
-  padding: 20px;
-  z-index: 15;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 20px rgba(0,201,255,0.2);
-  overflow-y: auto;
-  animation: slideInRight 0.5s ease-out;
-}
-.definitions-side-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid rgba(0,201,255,0.3);
-}
-.definitions-side-header .def-icon {
-  font-size: 1.8rem;
-  filter: drop-shadow(0 0 8px rgba(255,215,0,0.6));
-}
-.definitions-side-header h3 {
-  font-size: 1.1rem;
-  font-weight: 900;
-  color: var(--warning);
-  letter-spacing: 2px;
-  text-shadow: 0 0 10px rgba(255,228,160,0.5);
-  margin: 0;
-}
-.definitions-content {
-  min-height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.definition-item {
-  text-align: center;
-  animation: definitionFadeIn 0.8s ease-out;
-}
-.def-title {
-  font-size: 1.3rem;
-  font-weight: 900;
-  color: var(--accent-primary);
-  margin-bottom: 12px;
-  text-shadow: 0 0 10px rgba(0,201,255,0.5);
-}
-.def-text {
-  font-size: 1rem;
-  color: var(--text-primary);
-  line-height: 1.6;
-  font-weight: 500;
-}
-.btn-lb-mobile {
-  display: none;
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  background: linear-gradient(135deg, #ffd700, #ff9800);
-  color: #000;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 30px;
-  font-weight: 800;
-  font-size: 0.95rem;
-  cursor: pointer;
-  z-index: 16;
-  box-shadow: 0 4px 20px rgba(255,215,0,0.5);
-  animation: pulse 2s infinite;
-}
-.btn-ref-mobile {
-  display: none;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: linear-gradient(135deg, #00c9ff, #0076ff);
-  color: #fff;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 30px;
-  font-weight: 800;
-  font-size: 0.95rem;
-  cursor: pointer;
-  z-index: 16;
-  box-shadow: 0 4px 20px rgba(0,201,255,0.5);
-  animation: pulse 2s infinite;
-}
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(5px);
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.modal {
-  background: rgba(20,25,40,0.95);
-  backdrop-filter: blur(15px);
-  border: 2px solid var(--accent-primary);
-  border-radius: 24px;
-  padding: 30px;
-  max-width: 380px;
-  width: 90%;
-  text-align: center;
-  animation: fadeIn 0.3s ease-out;
-}
-.modal h2 {
-  color: var(--warning);
-  margin-bottom: 15px;
-  font-size: 1.6rem;
-}
-.reward-display {
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: var(--success);
-  margin: 20px 0;
-  text-shadow: 0 0 15px var(--success);
-}
-.badge-msg {
-  color: var(--accent-secondary);
-  font-weight: 700;
-  margin-top: 10px;
-  font-size: 1.1rem;
-}
-.modal-rules {
-  max-width: 520px;
-  max-height: 85vh;
-  overflow-y: auto;
-  text-align: left;
-}
-.modal-rules h2 {
-  text-align: center;
-}
-.rules-body p {
-  margin: 10px 0;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: var(--text-primary);
-}
-.rules-body .rules-sub {
-  margin: 4px 0 4px 14px;
-  color: var(--text-secondary);
-}
-.rules-body b {
-  color: var(--warning);
-}
-.modal-rules .game-btn {
-  width: 100%;
-  margin-top: 14px;
-}
-.planet-intro {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.88);
-  z-index: 150;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.planet-intro-image {
-  width: 62vmin;
-  height: 62vmin;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 50%;
-  opacity: 0;
-  transform: scale(.55);
-  transition: opacity .9s ease, transform .9s ease;
-  filter: drop-shadow(0 0 45px rgba(120,180,255,.55));
-}
-.planet-intro-image.visible {
-  opacity: 1;
-  transform: scale(1);
-}
-.planet-intro-text {
-  margin-top: 2vmin;
-  max-width: 90%;
-  text-align: center;
-  font-size: clamp(1.1rem, 4vw, 1.9rem);
-  font-weight: 800;
-  color: #fff;
-  text-shadow: 0 0 16px rgba(0,201,255,.8);
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity .8s ease, transform .8s ease;
-  line-height: 1.4;
-}
-.planet-intro-text.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.planet-intro-planet {
-  display: block;
-  font-family: 'Russo One', sans-serif;
-  font-size: 1.25em;
-  color: #ffd700;
-  text-shadow: 0 0 18px rgba(255,215,0,.8);
-  margin-bottom: 6px;
-}
-.settings-title {
-  font-size: 1.8rem;
-  margin-bottom: 25px;
-  color: var(--warning);
-  text-shadow: 0 0 15px var(--warning);
-}
-.settings-section {
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
-  padding: 20px;
-  border-radius: 16px;
-  margin-bottom: 20px;
-  border: 1px solid rgba(255,255,255,0.15);
-}
-.settings-label {
-  font-size: 1.1rem;
-  margin-bottom: 15px;
-  color: var(--text-secondary);
-  text-align: left;
-}
-.toggle-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 1rem;
-  font-weight: 600;
-}
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 26px;
-}
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-.toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255,255,255,0.2);
-  border-radius: 26px;
-  transition: 0.3s;
-}
-.toggle-slider:before {
-  position: absolute;
-  content: " ";
-  height: 20px;
-  width: 20px;
-  left: 3px;
-  bottom: 3px;
-  background: white;
-  border-radius: 50%;
-  transition: 0.3s;
-}
-input:checked + .toggle-slider {
-  background: var(--success);
-}
-input:checked + .toggle-slider:before {
-  transform: translateX(24px);
-}
-.level-selector {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  max-height: 400px;
-  overflow-y: auto;
-  padding: 4px;
-}
-.level-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background: rgba(0,0,0,0.5);
-  border: 2px solid rgba(255,255,255,0.15);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-  color: #fff;
-  text-align: left;
-}
-.level-item:hover {
-  transform: translateX(4px);
-  background: rgba(0,0,0,0.7);
-}
-.level-item.active {
-  background: linear-gradient(135deg, #00c9ff, #0076ff);
-  border-color: #00c9ff;
-  box-shadow: 0 4px 15px rgba(0,201,255,0.4);
-}
-.level-item.unpassed {
-  opacity: 0.7;
-}
-.level-number {
-  font-size: 1.3rem;
-  font-weight: 900;
-  min-width: 40px;
-}
-.level-name {
-  flex: 1;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin: 0 10px;
-}
-.level-status {
-  font-size: 1.2rem;
-}
-.parental-gate-math {
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: var(--warning);
-  text-shadow: 0 0 10px var(--warning);
-  margin: 15px 0;
-  letter-spacing: 2px;
-}
-.gate-timer-container {
-  margin: 15px 0;
-}
-.gate-timer-bar {
-  width: 100%;
-  height: 10px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 8px;
-}
-.gate-timer-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #96c93d, #ffe4a0, #ff4b2b);
-  width: 100%;
-  transition: width 0.1s linear;
-}
-.gate-timer-text {
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: var(--warning);
-  text-shadow: 0 0 10px var(--warning);
-  font-variant-numeric: tabular-nums;
-}
-.gate-timer-text.danger {
-  color: #ff4b2b !important;
-  text-shadow: 0 0 15px #ff4b2b !important;
-  animation: pulse-danger 0.5s ease-in-out infinite;
-}
-#particles-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 50;
-}
-.training-level-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  max-height: 400px;
-  overflow-y: auto;
-  padding: 10px;
-  margin: 15px 0;
-}
-.training-level-btn {
-  padding: 12px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #fff;
-  background: rgba(255,152,0,0.2);
-  border: 2px solid #ff9800;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-align: center;
-}
-.training-level-btn:hover {
-  background: rgba(255,152,0,0.4);
-  transform: scale(1.05);
-}
-.training-level-btn:active {
-  transform: scale(0.95);
-}
-.training-level-btn .level-num {
-  display: block;
-  font-size: 1.3rem;
-  font-weight: 900;
-  color: #ffc107;
-  margin-bottom: 4px;
-}
-.training-level-btn .level-name {
-  display: block;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-}
-#screen-game.boss-level {
-  animation: bossPulse 2s ease-in-out infinite;
-}
-#screen-game.boss-level .game-header {
-  border: 2px solid #ff4b2b;
-  box-shadow: 0 0 20px rgba(255,75,43,0.5);
-  background: linear-gradient(135deg, rgba(255,75,43,0.15), rgba(255,215,0,0.1));
-}
-#screen-game.boss-level .session-timer {
-  color: #ff4b2b !important;
-  text-shadow: 0 0 15px #ff4b2b, 0 0 30px #ff4b2b !important;
-  animation: pulse-danger 1s ease-in-out infinite;
-}
-#screen-game.boss-level .question-container {
-  border: 2px solid #ffd700;
-  box-shadow: 0 0 25px rgba(255,215,0,0.4);
-  background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,75,43,0.08));
-}
-#screen-game.boss-level .question-text {
-  color: #ffd700;
-  text-shadow: 0 0 15px rgba(255,215,0,0.6), 0 2px 10px rgba(0,0,0,0.8);
-}
-#screen-game.boss-level .option-btn {
-  border-color: rgba(255,215,0,0.4);
-  background: linear-gradient(135deg, rgba(255,75,43,0.2), rgba(0,0,0,0.7));
-}
-#screen-game.boss-level .option-btn:hover:not(:disabled) {
-  border-color: #ffd700;
-  box-shadow: 0 0 15px rgba(255,215,0,0.5);
-}
-.level-item.boss-level-item {
-  background: linear-gradient(135deg, rgba(255,75,43,0.3), rgba(255,215,0,0.2));
-  border: 2px solid #ffd700;
-  box-shadow: 0 0 15px rgba(255,215,0,0.3);
-  animation: bossLevelGlow 2s ease-in-out infinite;
-}
-.level-item.boss-level-item .level-name {
-  color: #ffd700;
-  font-weight: 900;
-  letter-spacing: 1px;
-}
-.level-item.boss-level-item.active {
-  background: linear-gradient(135deg, #ff4b2b, #ffd700);
-  border-color: #ffd700;
-  box-shadow: 0 0 25px rgba(255,215,0,0.6);
-}
-#screen-results .results-title {
-  font-size: 2.2rem;
-}
-#screen-results .results-medal {
-  font-size: 6rem;
-  filter: drop-shadow(0 0 20px rgba(255,215,0,0.8));
-}
-@keyframes feedbackPop {
-  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-  30% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
-  70% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-}
-.feedback-icon {
-  animation: feedbackPop 0.8s ease-out forwards;
-}
-@media (max-height: 850px) {
-  body { padding: 8px; align-items: flex-start; padding-top: 10px; }
-  .screen { max-width: 420px; }
-  .game-header { margin-bottom: 10px; }
-  .session-timer-container { padding: 8px; margin-bottom: 8px; }
-  .session-timer { font-size: 2rem; }
-  .progress-info { padding: 8px; margin-bottom: 8px; font-size: 0.9rem; }
-  .timer-bar { height: 8px; margin-bottom: 4px; }
-  .timer-text { top: -24px; font-size: 1.2rem; }
-  .question-container { padding: 14px; margin-bottom: 12px; min-height: 100px; gap: 6px; }
-  .question-visual { font-size: 2rem; letter-spacing: 4px; gap: 4px; }
-  .question-story { font-size: 0.95rem; padding: 6px 10px; }
-  .question-text { font-size: 1.2rem; }
-  .options-grid { gap: 8px; }
-  .option-btn { padding: 14px; font-size: 1.2rem; }
-  .option-btn.option-symbol { font-size: 1.6rem; padding: 12px; }
-  #btn-quit-game { margin-top: 8px; padding: 10px; font-size: 0.95rem; }
-}
-@media (max-width: 1200px) {
-  .leaderboard-side { width: 240px; left: 15px; top: 15px; padding: 16px; }
-  .leaderboard-side-header h3 { font-size: 1rem; }
-  .definitions-side { width: 280px; right: 15px; top: 15px; padding: 16px; }
-}
-@media (max-width: 900px) {
-  .leaderboard-side {
-    position: fixed;
-    top: auto;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 40px);
-    max-width: 400px;
-    max-height: 60vh;
-    animation: none;
+Серверная генерация задач + синхронизация профилей
++ v5.0 (1.3): педагогическая подсказка при ошибке
+*/
+const API_BASE = window.location.origin;
+
+// ============================================================================
+// БЛОК 1: УПРАВЛЕНИЕ СОСТОЯНИЕМ (StateManager)
+// ============================================================================
+const StateManager = {
+  STORAGE_KEY: 'cosmoQuestData_v3',
+  loadData() {
+    const data = localStorage.getItem(this.STORAGE_KEY);
+    return data ? JSON.parse(data) : {
+      players: {},
+      currentPlayer: null,
+      selectedGrade: 1
+    };
+  },
+  saveData(data) {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
+  },
+  getPlayer(name) {
+    const data = this.loadData();
+    if (!data.players[name]) {
+      data.players[name] = {
+        name: name,
+        stars: 0,
+        streakDays: 0,
+        lastLoginDate: null,
+        dailyBonusClaimed: false,
+        badges: [],
+        highScores: [],
+        lives: 3,
+        lastLifeResetDate: null,
+        currentLevel: 1,
+        unlockedLevels: [1],
+        selectedGrade: 1,
+        examPassed: false,
+        diploma: false,
+        lastCompletedLevel: 0,
+        dailyRetries: 3,
+        lastRetryResetDate: null,
+        dailyStreakBonus: 0,
+        bestScores: {}
+      };
+      this.saveData(data);
+    }
+    return data.players[name];
+  },
+  setCurrentPlayer(name) {
+    const data = this.loadData();
+    data.currentPlayer = name;
+    this.saveData(data);
+  },
+  setSelectedGrade(grade) {
+    const data = this.loadData();
+    data.selectedGrade = grade;
+    if (data.currentPlayer && data.players[data.currentPlayer]) {
+      data.players[data.currentPlayer].selectedGrade = grade;
+    }
+    this.saveData(data);
+  },
+  getSelectedGrade() {
+    return this.loadData().selectedGrade || 1;
+  },
+  updatePlayer(name, updates) {
+    const data = this.loadData();
+    data.players[name] = { ...data.players[name], ...updates };
+    this.saveData(data);
+    return data.players[name];
+  },
+  getAllPlayers() {
+    return this.loadData().players;
+  },
+  resetAll() {
+    localStorage.removeItem(this.STORAGE_KEY);
+    localStorage.removeItem('cosmoQuestSettings');
   }
-  .definitions-side {
-    position: fixed;
-    top: auto;
-    bottom: 160px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 40px);
-    max-width: 400px;
-    max-height: 60vh;
-    animation: none;
+};
+
+// ============================================================================
+// БЛОК 2: НАСТРОЙКИ (SettingsManager)
+// ============================================================================
+const SettingsManager = {
+  SETTINGS_KEY: 'cosmoQuestSettings',
+  load() {
+    const data = localStorage.getItem(this.SETTINGS_KEY);
+    return data ? JSON.parse(data) : { soundEnabled: true };
+  },
+  save(settings) {
+    localStorage.setItem(this.SETTINGS_KEY, JSON.stringify(settings));
+  },
+  isSoundEnabled() {
+    return this.load().soundEnabled;
+  },
+  setSoundEnabled(enabled) {
+    const settings = this.load();
+    settings.soundEnabled = enabled;
+    this.save(settings);
   }
-  .btn-lb-mobile { display: block; }
-  .btn-ref-mobile { display: block; }
-}
-@media (max-width: 900px) {
-  .leaderboard-side,
-  .definitions-side {
-    display: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+};
+
+// ============================================================================
+// БЛОК 3: АУДИО (AudioManager)
+// ============================================================================
+const AudioManager = {
+  audioCtx: null,
+  init() {
+    if (!this.audioCtx) {
+      this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (this.audioCtx.state === 'suspended') {
+      this.audioCtx.resume();
+    }
+  },
+  playCorrect() {
+    if (!SettingsManager.isSoundEnabled() || !this.audioCtx) return;
+    const now = this.audioCtx.currentTime;
+    [523.25, 659.25, 783.99].forEach((freq, i) => {
+      const osc = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(this.audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.1);
+      gain.gain.setValueAtTime(0.3, now + i * 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.2);
+      osc.start(now + i * 0.1);
+      osc.stop(now + i * 0.1 + 0.2);
+    });
+  },
+  playWrong() {
+    if (!SettingsManager.isSoundEnabled() || !this.audioCtx) return;
+    const now = this.audioCtx.currentTime;
+    const osc = this.audioCtx.createOscillator();
+    const gain = this.audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(this.audioCtx.destination);
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(200, now);
+    osc.frequency.linearRampToValueAtTime(100, now + 0.3);
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    osc.start(now);
+    osc.stop(now + 0.3);
+  },
+  playVictory() {
+    if (!SettingsManager.isSoundEnabled() || !this.audioCtx) return;
+    const now = this.audioCtx.currentTime;
+    [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+      const osc = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(this.audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.15);
+      gain.gain.setValueAtTime(0.3, now + i * 0.15);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.15 + 0.3);
+      osc.start(now + i * 0.15);
+      osc.stop(now + i * 0.15 + 0.3);
+    });
+  },
+  playBossVictory() {
+    if (!SettingsManager.isSoundEnabled() || !this.audioCtx) return;
+    const now = this.audioCtx.currentTime;
+    [523.25, 659.25, 783.99, 1046.5, 1318.5, 1567.98].forEach((freq, i) => {
+      const osc = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(this.audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.12);
+      gain.gain.setValueAtTime(0.4, now + i * 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.12 + 0.4);
+      osc.start(now + i * 0.12);
+      osc.stop(now + i * 0.12 + 0.4);
+    });
+  },
+  playLifeLost() {
+    if (!SettingsManager.isSoundEnabled() || !this.audioCtx) return;
+    const now = this.audioCtx.currentTime;
+    const osc = this.audioCtx.createOscillator();
+    const gain = this.audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(this.audioCtx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(400, now);
+    osc.frequency.linearRampToValueAtTime(150, now + 0.5);
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+    osc.start(now);
+    osc.stop(now + 0.5);
+  },
+  playClick() {
+    if (!SettingsManager.isSoundEnabled() || !this.audioCtx) return;
+    const now = this.audioCtx.currentTime;
+    const osc = this.audioCtx.createOscillator();
+    const gain = this.audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(this.audioCtx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(800, now);
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+    osc.start(now);
+    osc.stop(now + 0.05);
+  },
+  playLevelUp() {
+    if (!SettingsManager.isSoundEnabled() || !this.audioCtx) return;
+    const now = this.audioCtx.currentTime;
+    [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((freq, i) => {
+      const osc = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(this.audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.1);
+      gain.gain.setValueAtTime(0.3, now + i * 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.25);
+      osc.start(now + i * 0.1);
+      osc.stop(now + i * 0.1 + 0.25);
+    });
   }
-  .leaderboard-side:not(.hidden),
-  .definitions-side:not(.hidden) {
-    display: block;
-    animation: slideUpMobile 0.3s ease-out;
+};
+
+// ============================================================================
+// БЛОК 4: СИСТЕМА ЧАСТИЦ (ParticleSystem)
+// ============================================================================
+const ParticleSystem = {
+  canvas: null,
+  ctx: null,
+  particles: [],
+  animationId: null,
+  init() {
+    this.canvas = document.getElementById('particles-canvas');
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.resize();
+    window.addEventListener('resize', () => this.resize());
+    this.animate();
+  },
+  resize() {
+    if (!this.canvas) return;
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+  },
+  spawnCorrectParticles(x, y, isBoss = false) {
+    const colors = isBoss
+      ? ['#FFD700', '#FFA500', '#FF6347', '#FFEB3B', '#FF4500']
+      : ['#FFD700', '#FFA500', '#FF6347', '#FFEB3B'];
+    const count = isBoss ? 25 : 15;
+    for (let i = 0; i < count; i++) {
+      this.particles.push({
+        x: x, y: y,
+        vx: (Math.random() - 0.5) * (isBoss ? 12 : 8),
+        vy: (Math.random() - 0.5) * (isBoss ? 12 : 8) - 3,
+        life: 1, decay: 0.02,
+        size: Math.random() * (isBoss ? 6 : 4) + 2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        type: 'spark'
+      });
+    }
+  },
+  spawnVictoryConfetti(isBoss = false) {
+    const colors = isBoss
+      ? ['#FFD700', '#FFA500', '#FF6347', '#FFEB3B', '#FF4500', '#FF1493', '#00CED1']
+      : ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE'];
+    const cx = this.canvas.width / 2;
+    const cy = this.canvas.height / 3;
+    const count = isBoss ? 150 : 80;
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 * i) / count;
+      const speed = Math.random() * (isBoss ? 15 : 10) + 5;
+      this.particles.push({
+        x: cx, y: cy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 5,
+        life: 1,
+        decay: isBoss ? 0.005 : 0.008,
+        size: Math.random() * (isBoss ? 8 : 6) + 3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        type: 'confetti',
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.2
+      });
+    }
+    if (isBoss) {
+      for (let i = 0; i < 50; i++) {
+        this.particles.push({
+          x: Math.random() * this.canvas.width,
+          y: -20,
+          vx: (Math.random() - 0.5) * 2,
+          vy: Math.random() * 3 + 2,
+          life: 1, decay: 0.003,
+          size: Math.random() * 4 + 2,
+          color: '#FFD700',
+          type: 'spark'
+        });
+      }
+    }
+  },
+  animate() {
+    if (!this.ctx) return;
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.particles = this.particles.filter(p => p.life > 0);
+    this.particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.2;
+      p.life -= p.decay;
+      this.ctx.save();
+      this.ctx.globalAlpha = p.life;
+      this.ctx.fillStyle = p.color;
+      if (p.type === 'confetti') {
+        p.rotation += p.rotationSpeed;
+        this.ctx.translate(p.x, p.y);
+        this.ctx.rotate(p.rotation);
+        this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.5);
+      } else {
+        this.ctx.beginPath();
+        this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        this.ctx.fill();
+      }
+      this.ctx.restore();
+    });
+    this.animationId = requestAnimationFrame(() => this.animate());
   }
-  @keyframes slideUpMobile {
-    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+};
+
+// ============================================================================
+// БЛОК 5: КИНЕМАТОГРАФИЧНЫЕ ПЕРЕХОДЫ (PlanetIntro)
+// ============================================================================
+const PlanetIntro = {
+  overlay: null,
+  img: null,
+  txt: null,
+  ensure() {
+    if (this.overlay) return;
+    this.overlay = document.createElement('div');
+    this.overlay.className = 'planet-intro hidden';
+    this.img = document.createElement('div');
+    this.img.className = 'planet-intro-image';
+    this.txt = document.createElement('div');
+    this.txt.className = 'planet-intro-text';
+    this.overlay.appendChild(this.img);
+    this.overlay.appendChild(this.txt);
+    document.body.appendChild(this.overlay);
+  },
+  show(levelId, htmlText, holdMs, onDone) {
+    this.ensure();
+    this.img.classList.remove('visible');
+    this.txt.classList.remove('visible');
+    this.img.style.backgroundImage = `url('backgrounds/level-${levelId}.png')`;
+    this.txt.innerHTML = htmlText;
+    this.overlay.classList.remove('hidden');
+    setTimeout(() => this.img.classList.add('visible'), 150);
+    setTimeout(() => this.txt.classList.add('visible'), 900);
+    setTimeout(() => this.txt.classList.remove('visible'), 900 + holdMs);
+    setTimeout(() => {
+      this.overlay.classList.add('hidden');
+      setTimeout(() => {
+        this.img.classList.remove('visible');
+        this.txt.classList.remove('visible');
+      }, 1100);
+      if (onDone) onDone();
+    }, 1900 + holdMs);
   }
-}
-@media (max-width: 480px) {
-  body { padding: 10px; align-items: flex-start; padding-top: 20px; }
-  .screen { max-width: 100%; }
-  .game-title { font-size: 1.6rem; }
-  .player-header { flex-direction: column; gap: 10px; align-items: flex-start; }
-  .stats-row { width: 100%; justify-content: space-between; }
-  .stat-badge { font-size: 0.75rem; padding: 4px 8px; }
-  .current-level-display { font-size: 0.95rem; padding: 12px 16px; }
-  .session-timer { font-size: 2rem; }
-  .question-container { padding: 16px; min-height: 120px; }
-  .question-visual { font-size: 2.2rem; letter-spacing: 4px; gap: 4px; }
-  .question-story { font-size: 1rem; padding: 6px 10px; }
-  .question-text { font-size: 1.3rem; }
-  .options-grid { gap: 8px; }
-  .option-btn { padding: 18px; font-size: 1.3rem; }
-  .option-btn .option-symbol { font-size: 1.8rem; padding: 16px; }
-  .results-stats { grid-template-columns: 1fr; gap: 8px; }
-  .results-medal { font-size: 4rem; }
-  .game-btn { padding: 14px; font-size: 1rem; }
-  .btn-play { font-size: 1.1rem; padding: 16px; }
-  .btn-training { font-size: 1.05rem; padding: 16px; }
-  .leaderboard-side { width: calc(100% - 20px); bottom: 70px; padding: 14px; }
-  .definitions-side { width: calc(100% - 20px); right: 10px; bottom: 150px; padding: 14px; }
-  .btn-lb-mobile { bottom: 15px; left: 10px; padding: 10px; font-size: 0.9rem; }
-  .btn-ref-mobile { bottom: 15px; right: 10px; padding: 10px; font-size: 0.9rem; }
-  .modal { padding: 20px; max-width: 95%; }
-  .modal h2 { font-size: 1.3rem; }
-  .reward-display { font-size: 2rem; }
-  .parental-gate-math { font-size: 1.8rem; }
-  .level-item { padding: 10px 12px; }
-  .level-name { font-size: 0.75rem; }
-  .training-level-list { grid-template-columns: 1fr; max-height: 300px; }
-  .training-level-btn { padding: 10px; font-size: 0.85rem; }
-}
-@media (max-width: 360px) {
-  .game-title { font-size: 1.4rem; }
-  .question-visual { font-size: 1.8rem; letter-spacing: 3px; }
-  .option-btn { padding: 14px; font-size: 1.1rem; }
-  .option-btn.option-symbol { font-size: 1.5rem; }
-  .session-timer { font-size: 1.7rem; }
-}
-@media (max-height: 500px) and (orientation: landscape) {
-  body { padding: 8px; align-items: flex-start; }
-  .question-container { padding: 12px; min-height: 80px; }
-  .question-visual { font-size: 1.8rem; }
-  .options-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
-  .option-btn { padding: 12px; font-size: 1.1rem; }
-  .session-timer-container { padding: 8px; }
-  .session-timer { font-size: 1.5rem; }
-}
+};
+
+// ============================================================================
+// БЛОК 6: МОТИВАЦИЯ И ПРОГРЕСС (MotivationManager)
+// ============================================================================
+const MotivationManager = {
+  DAILY_BONUS_STARS: 20,
+  checkDailyLogin(playerName) {
+    const player = StateManager.getPlayer(playerName);
+    const today = new Date().toDateString();
+    let starsEarned = 0;
+    let newBadge = null;
+    let streakBonus = 0;
+    if (player.lastLoginDate !== today) {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (player.lastLoginDate === yesterday.toDateString()) {
+        player.streakDays += 1;
+      } else if (player.lastLoginDate !== today) {
+        player.streakDays = 1;
+      }
+      player.lastLoginDate = today;
+      player.dailyBonusClaimed = false;
+      player.dailyRetries = 3;
+      player.lastRetryResetDate = today;
+      starsEarned = this.DAILY_BONUS_STARS;
+      if (player.streakDays > 0 && player.streakDays % 5 === 0) {
+        streakBonus = 50;
+      }
+      if (player.streakDays === 3 && !player.badges.includes('Настойчивая звезда')) {
+        player.badges.push('Настойчивая звезда');
+        newBadge = 'Настойчивая звезда';
+      } else if (player.streakDays === 7 && !player.badges.includes('Космическая неделя')) {
+        player.badges.push('Космическая неделя');
+        newBadge = 'Космическая неделя';
+      }
+      StateManager.updatePlayer(playerName, {
+        streakDays: player.streakDays,
+        lastLoginDate: player.lastLoginDate,
+        dailyBonusClaimed: player.dailyBonusClaimed,
+        badges: player.badges,
+        dailyRetries: player.dailyRetries,
+        lastRetryResetDate: player.lastRetryResetDate,
+        dailyStreakBonus: streakBonus
+      });
+    }
+    const sb = player.dailyStreakBonus || 0;
+    return {
+      hasBonus: !player.dailyBonusClaimed,
+      starsEarned: starsEarned + sb,
+      streakBonus: sb,
+      newBadge: newBadge,
+      streak: player.streakDays,
+      dailyRetries: player.dailyRetries
+    };
+  },
+  checkAndResetLives(playerName) {
+    const player = StateManager.getPlayer(playerName);
+    const today = new Date().toDateString();
+    if (player.lastLifeResetDate !== today) {
+      StateManager.updatePlayer(playerName, {
+        lives: 3,
+        lastLifeResetDate: today
+      });
+    }
+    return StateManager.getPlayer(playerName).lives;
+  },
+  claimDailyBonus(playerName) {
+    const player = StateManager.getPlayer(playerName);
+    if (!player.dailyBonusClaimed) {
+      const bonus = player.dailyStreakBonus || 0;
+      const updated = StateManager.updatePlayer(playerName, {
+        stars: player.stars + this.DAILY_BONUS_STARS + bonus,
+        dailyBonusClaimed: true,
+        dailyStreakBonus: 0
+      });
+      return updated.stars;
+    }
+    return player.stars;
+  },
+  useRetry(playerName) {
+    const player = StateManager.getPlayer(playerName);
+    if (player.dailyRetries > 0) {
+      const updated = StateManager.updatePlayer(playerName, {
+        dailyRetries: player.dailyRetries - 1
+      });
+      return updated.dailyRetries;
+    }
+    return 0;
+  },
+  addScore(playerName, score) {
+    const player = StateManager.getPlayer(playerName);
+    player.highScores.push({
+      score: score,
+      date: new Date().toLocaleDateString()
+    });
+    player.highScores.sort((a, b) => a.score - b.score);
+    player.highScores = player.highScores.slice(0, 5);
+    StateManager.updatePlayer(playerName, {
+      highScores: player.highScores
+    });
+  },
+  updateBestScore(playerName, levelId, timeSpent) {
+    const player = StateManager.getPlayer(playerName);
+    if (!player.bestScores) player.bestScores = {};
+    const currentBest = player.bestScores[levelId];
+    if (!currentBest || timeSpent < currentBest) {
+      player.bestScores[levelId] = timeSpent;
+      StateManager.updatePlayer(playerName, {
+        bestScores: player.bestScores
+      });
+      return true;
+    }
+    return false;
+  },
+  getLeaderboard() {
+    const players = StateManager.getAllPlayers();
+    return Object.values(players)
+      .map(p => ({
+        name: p.name,
+        bestScore: p.highScores.length > 0 ? p.highScores[0].score : 0,
+        stars: p.stars || 0,
+        badges: p.badges || [],
+        lastCompletedLevel: p.lastCompletedLevel || 0
+      }))
+      .sort((a, b) => b.stars - a.stars);
+  }
+};
+
+// ============================================================================
+// БЛОК 7: ИСТОРИЯ ВОПРОСОВ (QuestionHistory)
+// ============================================================================
+const QuestionHistory = {
+  lastQuestions: [],
+  MAX_HISTORY: 25,
+  reset() {
+    this.lastQuestions = [];
+  },
+  getQuestionKey(question) {
+    if (!question) return null;
+    if (question.story) return 'story:' + question.story;
+    if (question.question) return 'q:' + question.question;
+    return 'type:' + question.type;
+  },
+  isDuplicate(question) {
+    const key = this.getQuestionKey(question);
+    if (!key) return false;
+    return this.lastQuestions.includes(key);
+  },
+  add(question) {
+    const key = this.getQuestionKey(question);
+    if (!key) return;
+    this.lastQuestions.push(key);
+    if (this.lastQuestions.length > this.MAX_HISTORY) {
+      this.lastQuestions.shift();
+    }
+  }
+};
+
+// ============================================================================
+// БЛОК 8: ДВИЖОК МАТЕМАТИКИ (MathEngine) — ЛОКАЛЬНЫЙ ФОЛЛБЭК
+// ============================================================================
+const MathEngine = {
+  LEVELS: [
+    { id: 1, name: 'Первый контакт', planet: 'Аэрис', type: 'visual_count', block: 1, baseTime: 300 },
+    { id: 2, name: 'Гравитационное поле', planet: 'Люмен', type: 'comparison', block: 1, baseTime: 315 },
+    { id: 3, name: 'Двойные звёзды', planet: 'Дуо', type: 'composition', block: 1, baseTime: 331 },
+    { id: 4, name: 'Слияние галактик', planet: 'Суммия', type: 'addition', block: 1, baseTime: 347, max: 10 },
+    { id: 5, name: 'Чёрная дыра', planet: 'Умбра', type: 'subtraction', block: 1, baseTime: 365, max: 10 },
+    { id: 6, name: 'Парад планет', planet: 'Процессия', type: 'visual_sequence', block: 2, baseTime: 383 },
+    { id: 7, name: 'Двойная система', planet: 'Бинита', type: 'place_value', block: 2, baseTime: 402 },
+    { id: 8, name: 'Световой скачок', planet: 'Люцида', type: 'addition_20', block: 2, baseTime: 422 },
+    { id: 9, name: 'Обратный отсчёт', planet: 'Ретрогра', type: 'subtraction_20', block: 2, baseTime: 443 },
+    { id: 10, name: 'Перекрёсток комет', planet: 'Комета', type: 'mixed_20', block: 2, baseTime: 465 },
+    { id: 11, name: 'Весы Вселенной', planet: 'Либра', type: 'difference', block: 3, baseTime: 488 },
+    { id: 12, name: 'Ускорение / Торможение', planet: 'Велоция', type: 'increase_decrease', block: 3, baseTime: 512 },
+    { id: 13, name: 'Скрытая планета', planet: 'Целита', type: 'unknown', block: 3, baseTime: 538 },
+    { id: 14, name: 'Симметрия мироздания', planet: 'Симметрия', type: 'parity', block: 3, baseTime: 565 },
+    { id: 15, name: 'Ритм пульсара', planet: 'Пульсара', type: 'group_count', block: 3, baseTime: 593 },
+    { id: 16, name: 'Грузовой корабль', planet: 'Каргона', type: 'text_problem_1', block: 4, baseTime: 623 },
+    { id: 17, name: 'Двойная экспедиция', planet: 'Эксперия', type: 'text_problem_2', block: 4, baseTime: 654 },
+    { id: 18, name: 'Станция «Метрология»', planet: 'Метрия', type: 'measurement', block: 4, baseTime: 687 },
+    { id: 19, name: 'Карта созвездий', planet: 'Стелларис', type: 'geometry', block: 4, baseTime: 721 },
+    { id: 20, name: 'Врата Андромеды', planet: 'Андария', type: 'andromeda_mix', block: 4, baseTime: 757 },
+    { id: 21, name: 'Что лишнее?', planet: 'Кристаллия', type: 'odd_one_out', block: 6, baseTime: 795 },
+    { id: 22, name: 'Закономерности', planet: 'Секвенция', type: 'pattern', block: 6, baseTime: 835 },
+    { id: 23, name: 'Эмодзи-ребусы', planet: 'Ребусия', type: 'emoji_rebus', block: 6, baseTime: 877 },
+    { id: 24, name: 'Истинно или ложно', planet: 'Веритас', type: 'true_false', block: 6, baseTime: 921 },
+    { id: 25, name: 'Смешанная логика', planet: 'Смекалия', type: 'logic_mix_1', block: 6, baseTime: 967 },
+    { id: 26, name: 'Задачи с подвохом', planet: 'Таиния', type: 'trick_question', block: 7, baseTime: 1015 },
+    { id: 27, name: 'Логические цепочки', planet: 'Катения', type: 'logic_chain', block: 7, baseTime: 1066 },
+    { id: 28, name: 'Пространство', planet: 'Ориентия', type: 'spatial', block: 7, baseTime: 1119 },
+    { id: 29, name: 'Загадки-смекалки', planet: 'Мистерия', type: 'riddle', block: 7, baseTime: 1175 },
+    { id: 30, name: 'Детективный экзамен', planet: 'Шерлокия', type: 'detective_mix', block: 7, baseTime: 1234 },
+    { id: 31, name: 'Сколько способов?', planet: 'Вариатия', type: 'combinatorics', block: 8, baseTime: 1296 },
+    { id: 32, name: 'Числовые головоломки', planet: 'Пазлия', type: 'number_puzzle', block: 8, baseTime: 1361 },
+    { id: 33, name: 'Задачи на внимание', planet: 'Атенция', type: 'attention', block: 8, baseTime: 1429 },
+    { id: 34, name: 'Космические загадки', planet: 'Арения', type: 'space_riddle', block: 8, baseTime: 1500 },
+    { id: 35, name: 'Цирковой экзамен', planet: 'Циркония', type: 'circus_mix', block: 8, baseTime: 1575 },
+    { id: 36, name: 'Логика + смекалка', planet: 'Аурум', type: 'logic_smekalka', block: 9, baseTime: 1654 },
+    { id: 37, name: 'Числа + закономерности', planet: 'Спиралия', type: 'number_pattern', block: 9, baseTime: 1737 },
+    { id: 38, name: 'Пространство + внимание', planet: 'Астерия', type: 'space_attention', block: 9, baseTime: 1824 },
+    { id: 39, name: 'Финальная разминка', planet: 'Лавария', type: 'final_warmup', block: 9, baseTime: 1915 },
+    { id: 40, name: 'КОСМИЧЕСКИЙ ЭКЗАМЕН', planet: 'Корония', type: 'mega_boss', block: 10, baseTime: 2400 }
+  ],
+  getAdjustedTime(levelId) {
+    return this.LEVELS[levelId - 1].baseTime;
+  },
+  getPlanet(levelId) {
+    return this.LEVELS[levelId - 1].planet;
+  },
+  getQuestionTime(levelId) {
+    if (levelId === 40) return 45;
+    if (levelId > 20) return Math.min(60, Math.round(20 * Math.pow(1.03, levelId - 21)));
+    return Math.round(15 * Math.pow(1.05, levelId - 1));
+  }
+};
+
+// ============================================================================
+// БЛОК 9: СЮЖЕТНЫЙ ГЕНЕРАТОР (StoryEngine) — клиентский фоллбэк
+// ============================================================================
+const StoryEngine = {
+  BANK: {
+    addition: [
+      "Корабль принял {a} тонн топлива и ещё {b} тонн. Сколько всего?",
+      "На станции было {a} пилотов, прилетело ещё {b}. Сколько стало?",
+      "Ракета собрала {a} кристаллов и {b} метеоритов. Сколько всего?",
+      "Экипаж {a} человек пополнился {b} стажёрами. Итого?"
+    ],
+    subtraction: [
+      "Из {a} литров кислорода израсходовали {b}. Сколько осталось?",
+      "Было {a} ракет, {b} улетели на задание. Сколько на базе?",
+      "Корабль потерял {b} из {a} деталей. Сколько целых?",
+      "На борту {a} пайков, съели {b}. Сколько осталось?"
+    ],
+    comparison: [
+      "Плотность поля A: {a}, поля B: {b}. Какое больше?",
+      "Корабль {a} летит быстрее корабля {b}. Какой знак?",
+      "Энергия щита {a}, энергия меча {b}. Сравни!",
+      "Запас кислорода {a} и {b}. Где больше?"
+    ],
+    composition: [
+      "Экипаж из {n} человек: {a} пилотов и ... штурманов?",
+      "Груз {n} тонн: {a} тонны руды и ... кристаллов?",
+      "Корабль {n} метров: {a} метра корпус и ... нос?"
+    ],
+    visual_count: [
+      "Сколько {emoji} пролетело мимо станции?",
+      "Пилот насчитал {emoji} на радаре. Сколько их?",
+      "На орбите дрейфуют {emoji}. Посчитай!",
+      "Сколько {emoji} увидел скафандр?"
+    ],
+    visual_sequence: [
+      "Сколько звёзд {emoji} видно в телескоп?",
+      "На карте отмечено {emoji}. Посчитай все!",
+      "Скафандр зафиксировал {emoji}. Сколько их?"
+    ],
+    place_value: [
+      "В номере корабля {n}: {tens} десятков и ... единиц?",
+      "Код шлюза {n}: {tens} десятков и сколько единиц?"
+    ],
+    addition_20: [
+      "Два корабля везут {a} и {b} тонн груза. Общий вес?",
+      "Станция приняла {a} сигналов утром и {b} вечером. Всего?"
+    ],
+    subtraction_20: [
+      "Из {a} модулей станции {b} на ремонте. Сколько работают?",
+      "Корабль потратил {b} из {a} единиц энергии. Остаток?"
+    ],
+    difference: [
+      "Корабль A пролетел {a} км, корабль B — {b} км. На сколько A дальше?",
+      "Запас {a} больше запаса {b}. На сколько?"
+    ],
+    unknown: [
+      "... + {b} = {c}. Сколько тонн топлива в баке?",
+      "Корабль взял ещё {b} и стало {c}. Сколько было сначала?"
+    ],
+    parity: [
+      "Число {n} — чётное или нечётное?",
+      "Двигатель модели {n} — чётный или нечётный номер?"
+    ],
+    group_count: [
+      "Сигналы идут через равные промежутки. Один пропущен — найди!",
+      "Маяки мигают по правилу. Какой сигнал пропущен?"
+    ],
+    measurement: [
+      "Корпус корабля: {q} Переведи!",
+      "Длина скафандра: {q} Проверь перевод!",
+      "Грузовой отсек: {q} Переведи!"
+    ],
+    pattern: [
+      "Продолжи последовательность сигналов: {seq}, ...",
+      "Код доступа к шлюзу: {seq}, ... Какое следующее число?"
+    ],
+    emoji_rebus: [
+      "{emoji} + {emoji} = {sum}. Чему равен один {emoji}?",
+      "Два одинаковых артефакта {emoji} весят {sum}. Вес одного?"
+    ]
+  },
+  isEnabled() {
+    const settings = SettingsManager.load();
+    return settings.storiesEnabled !== false;
+  },
+  getStory(type, data) {
+    const templates = this.BANK[type];
+    if (!templates) return null;
+    if (Array.isArray(templates)) {
+      const template = templates[Math.floor(Math.random() * templates.length)];
+      return this.fillTemplate(template, data);
+    }
+    return null;
+  },
+  fillTemplate(template, data) {
+    return template
+      .replace(/{a}/g, data.a ?? '')
+      .replace(/{b}/g, data.b ?? '')
+      .replace(/{n}/g, data.n ?? '')
+      .replace(/{tens}/g, data.tens ?? '')
+      .replace(/{emoji}/g, data.emoji ?? '⭐')
+      .replace(/{q}/g, data.q ?? '')
+      .replace(/{seq}/g, data.seq ?? '')
+      .replace(/{sum}/g, data.sum ?? '');
+  },
+  wrapQuestion(question, levelId) {
+    if (question.story) return question;
+    const data = this.extractData(question);
+    const story = this.getStory(question.type, data);
+    if (story) {
+      question.story = story;
+      question.storyType = question.type;
+    }
+    return question;
+  },
+  extractData(question) {
+    const data = {};
+    const nums = String(question.question).match(/\d+/g) || [];
+    switch (question.type) {
+      case 'visual_count':
+      case 'visual_sequence':
+        data.emoji = Array.isArray(question.visual) && question.visual[0] ? question.visual[0] : '⭐';
+        break;
+      case 'comparison':
+      case 'addition':
+      case 'addition_20':
+      case 'subtraction':
+      case 'subtraction_20':
+      case 'difference':
+        data.a = nums[0] || '';
+        data.b = nums[1] || '';
+        break;
+      case 'composition':
+        data.n = nums[0] || '';
+        data.a = nums[1] || '';
+        break;
+      case 'place_value':
+        data.n = nums[0] || '';
+        data.tens = nums[0] ? String(Math.floor(parseInt(nums[0], 10) / 10)) : '';
+        break;
+      case 'unknown':
+        data.b = nums[0] || '';
+        data.c = nums[1] || '';
+        break;
+      case 'parity':
+        data.n = nums[0] || '';
+        break;
+      case 'measurement':
+        data.q = question.question;
+        break;
+      case 'emoji_rebus': {
+        const emMatch = String(question.question).match(/^[^\s+]+/);
+        data.emoji = emMatch ? emMatch[0] : '';
+        const sumMatch = String(question.question).match(/=\s*(\d+)/);
+        data.sum = sumMatch ? sumMatch[1] : '';
+        break;
+      }
+      case 'pattern': {
+        const seqP = String(question.question).match(/\d+(?:,\s*\d+)*/);
+        data.seq = seqP ? seqP[0] : '';
+        break;
+      }
+      default:
+        break;
+    }
+    return data;
+  }
+};
+
+// ============================================================================
+// БЛОК 10: БАНК ОПРЕДЕЛЕНИЙ И АВТОСМЕНА (DefinitionsManager)
+// ============================================================================
+const DefinitionsManager = {
+  BANK: [
+    { title: "Число", text: "Число — это понятие, с помощью которого обозначают количество предметов" },
+    { title: "Цифра", text: "Цифра — это знак, которым записывают числа. Всего 10 цифр: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9" },
+    { title: "Сложение", text: "Сложение (+) — это действие, при котором к одному числу прибавляют другое. Результат называется суммой" },
+    { title: "Вычитание", text: "Вычитание (−) — это действие, при котором от одного числа отнимают другое. Результат называется разностью" },
+    { title: "Сумма", text: "Сумма — это результат сложения. Например: 3 + 5 = 8, где 8 — сумма" },
+    { title: "Разность", text: "Разность — это результат вычитания. Например: 10 − 4 = 6, где 6 — разность" },
+    { title: "Больше", text: "Знак > означает 'больше'. Например: 7 > 3 читается 'семь больше трёх'" },
+    { title: "Меньше", text: "Знак < означает 'меньше'. Например: 2 < 9 читается 'два меньше девяти'" },
+    { title: "Равно", text: "Знак = означает 'равно'. Например: 5 = 5 читается 'пять равно пяти'" },
+    { title: "Десяток", text: "Десяток — это 10 единиц. Числа от 11 до 19 состоят из одного десятка и нескольких единиц" },
+    { title: "Чётное число", text: "Чётное число — это число, которое делится на 2 без остатка: 2, 4, 6, 8, 10..." },
+    { title: "Нечётное число", text: "Нечётное число — это число, которое не делится на 2: 1, 3, 5, 7, 9..." },
+    { title: "Геометрическая фигура", text: "Геометрическая фигура — это форма предмета. Треугольник имеет 3 угла, квадрат — 4 равных стороны" },
+    { title: "Периметр", text: "Периметр — это сумма длин всех сторон фигуры. Чтобы найти периметр, складывают все стороны" },
+    { title: "Сантиметр", text: "Сантиметр (см) — это единица измерения длины. 1 дм = 10 см" },
+    { title: "Дециметр", text: "Дециметр (дм) — это единица измерения длины. 1 дм = 10 см" },
+    { title: "Килограмм", text: "Килограмм (кг) — это единица измерения массы (веса). 1 кг = 1000 г" },
+    { title: "Литр", text: "Литр (л) — это единица измерения объёма жидкости. Например, в бутылке может быть 1 л воды" },
+    { title: "Задача", text: "Задача — это математический рассказ с вопросом. У задачи есть условие (что известно) и вопрос (что нужно найти)" },
+    { title: "Уравнение", text: "Уравнение — это равенство с неизвестным числом. Например: x + 5 = 10, где x — неизвестное" }
+  ],
+  currentIndex: 0,
+  intervalId: null,
+  CHANGE_INTERVAL: 8000,
+  init() {
+    this.startRotation();
+  },
+  startRotation() {
+    setTimeout(() => {
+      this.showNext();
+      this.intervalId = setInterval(() => this.showNext(), this.CHANGE_INTERVAL);
+    }, 5000);
+  },
+  showNext() {
+    const contentEl = document.getElementById('definitions-content');
+    if (!contentEl) return;
+    const newItem = document.createElement('div');
+    newItem.className = 'definition-item';
+    newItem.innerHTML = `<div class="def-title">${this.BANK[this.currentIndex].title}</div><div class="def-text">${this.BANK[this.currentIndex].text}</div>`;
+    contentEl.innerHTML = '';
+    contentEl.appendChild(newItem);
+    this.currentIndex = (this.currentIndex + 1) % this.BANK.length;
+  },
+  stop() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+};
+
+// ============================================================================
+// БЛОК 11: ИГРОВОЙ ПРОЦЕСС (GameManager)
+// ============================================================================
+const GameManager = {
+  currentQuestion: null,
+  correctCount: 0,
+  mistakesCount: 0,
+  targetCorrect: 20,
+  sessionTimeLeft: 120,
+  baseTime: 120,
+  questionTimeLeft: 10,
+  questionTimeMax: 20,
+  sessionTimerInterval: null,
+  questionTimerInterval: null,
+  isAnswering: false,
+  currentLevel: 1,
+  startTime: 0,
+  isRetry: false,
+  isTrainingMode: false,
+  startGame(levelId = null, isRetry = false) {
+    AudioManager.init();
+    QuestionHistory.reset();
+    const player = StateManager.getPlayer(UIManager.currentPlayer);
+    this.currentLevel = levelId || player.currentLevel;
+    this.isRetry = isRetry;
+    this.isTrainingMode = false;
+    this.baseTime = MathEngine.getAdjustedTime(this.currentLevel);
+    this.correctCount = 0;
+    this.mistakesCount = 0;
+    this.sessionTimeLeft = this.baseTime;
+    this.targetCorrect = this.currentLevel === 40 ? 30 : 20;
+    this.questionTimeMax = MathEngine.getQuestionTime(this.currentLevel);
+    this.isAnswering = false;
+    this.startTime = Date.now();
+    const targetEl = document.getElementById('target-count');
+    if (targetEl) targetEl.textContent = this.targetCorrect;
+    UIManager.updateSessionTimer(this.sessionTimeLeft);
+    this.startSessionTimer();
+    this.loadQuestion();
+  },
+  startTraining(levelId) {
+    AudioManager.init();
+    QuestionHistory.reset();
+    this.currentLevel = levelId;
+    this.isTrainingMode = true;
+    this.isRetry = false;
+    this.baseTime = MathEngine.getAdjustedTime(this.currentLevel);
+    this.correctCount = 0;
+    this.mistakesCount = 0;
+    this.sessionTimeLeft = this.baseTime;
+    this.targetCorrect = this.currentLevel === 40 ? 30 : 20;
+    this.questionTimeMax = MathEngine.getQuestionTime(this.currentLevel);
+    this.isAnswering = false;
+    this.startTime = Date.now();
+    const targetEl = document.getElementById('target-count');
+    if (targetEl) targetEl.textContent = this.targetCorrect;
+    UIManager.updateSessionTimer(this.sessionTimeLeft);
+    this.startSessionTimer();
+    this.loadQuestion();
+  },
+  startSessionTimer() {
+    clearInterval(this.sessionTimerInterval);
+    this.sessionTimerInterval = setInterval(() => {
+      this.sessionTimeLeft -= 0.1;
+      UIManager.updateSessionTimer(this.sessionTimeLeft);
+      if (this.sessionTimeLeft <= 0) {
+        clearInterval(this.sessionTimerInterval);
+        this.handleSessionTimeout();
+      }
+    }, 100);
+  },
+  async loadQuestion(attempt = 1) {
+    this.isAnswering = false;
+    const questionContainer = document.getElementById('question-container');
+    if (questionContainer) {
+      const loadingText = attempt === 1
+        ? '📡 Устанавливаем связь с базой...<br>Готовим задачу!'
+        : `📡 Повторная попытка связи (${attempt}/3)...`;
+      questionContainer.innerHTML = `<div class="question-text">${loadingText}</div>`;
+    }
+    await new Promise(resolve => setTimeout(resolve, 300));
+    try {
+      const response = await fetch(`${API_BASE}/api/generate?level=${this.currentLevel}`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      if (!data.success || !data.task) throw new Error('Неверный формат ответа сервера');
+      this.currentQuestion = data.task;
+      this.questionTimeLeft = this.questionTimeMax;
+      UIManager.renderQuestion(this.currentQuestion, this.correctCount, this.targetCorrect);
+      this.startQuestionTimer();
+    } catch (error) {
+      console.warn(`Попытка ${attempt} не удалась:`, error);
+      if (attempt < 3) {
+        const delay = attempt === 1 ? 500 : (attempt === 2 ? 1500 : 3000);
+        setTimeout(() => this.loadQuestion(attempt + 1), delay);
+      } else {
+        if (questionContainer) {
+          questionContainer.innerHTML = `<div class="question-text">📡 Связь с космосом временно прервана!<br>Проверь интернет и попробуй снова.</div><button class="game-btn btn-primary" style="margin-top: 16px;" id="btn-retry-network">Попробовать снова 🔄</button>`;
+          document.getElementById('btn-retry-network')?.addEventListener('click', () => {
+            AudioManager.playClick();
+            this.loadQuestion(1);
+          });
+        }
+      }
+    }
+  },
+  startQuestionTimer() {
+    clearInterval(this.questionTimerInterval);
+    UIManager.updateQuestionTimer(this.questionTimeLeft, this.questionTimeMax);
+    this.questionTimerInterval = setInterval(() => {
+      this.questionTimeLeft -= 0.1;
+      UIManager.updateQuestionTimer(this.questionTimeLeft, this.questionTimeMax);
+      if (this.questionTimeLeft <= 0) {
+        clearInterval(this.questionTimerInterval);
+        this.handleQuestionTimeout();
+      }
+    }, 100);
+  },
+  handleAnswer(selectedValue, buttonElement) {
+    if (this.isAnswering) return;
+    this.isAnswering = true;
+    clearInterval(this.questionTimerInterval);
+    const isCorrect = String(selectedValue) === String(this.currentQuestion.correct);
+    const isBoss = this.currentLevel === 40;
+    if (isCorrect) {
+      this.correctCount++;
+      AudioManager.playCorrect();
+      UIManager.showFeedbackIcon(true);
+      if (buttonElement && ParticleSystem.canvas) {
+        const rect = buttonElement.getBoundingClientRect();
+        ParticleSystem.spawnCorrectParticles(
+          rect.left + rect.width / 2,
+          rect.top + rect.height / 2,
+          isBoss
+        );
+      }
+      UIManager.showAnswerResult(true, selectedValue, this.currentQuestion.correct);
+      if (this.correctCount >= this.targetCorrect) {
+        setTimeout(() => this.endGame(true), 1000);
+      } else {
+        setTimeout(() => this.loadQuestion(), 1000);
+      }
+    } else {
+      this.mistakesCount++;
+      AudioManager.playWrong();
+      UIManager.showFeedbackIcon(false);
+      UIManager.showAnswerResult(false, selectedValue, this.currentQuestion.correct);
+      // v5.0 (задача 1.3): пауза 1,5 с, затем подсказка с правилом;
+      // новый пример выдаётся ТОЛЬКО после закрытия подсказки
+      setTimeout(() => UIManager.showHint(this.currentQuestion, () => this.loadQuestion()), 1500);
+    }
+  },
+  handleQuestionTimeout() {
+    if (this.isAnswering) return;
+    this.isAnswering = true;
+    this.mistakesCount++;
+    AudioManager.playWrong();
+    UIManager.showAnswerResult(false, null, this.currentQuestion.correct);
+    // v5.0 (задача 1.3): время вышло = ошибка → подсказка с правилом
+    setTimeout(() => UIManager.showHint(this.currentQuestion, () => this.loadQuestion()), 1500);
+  },
+  handleSessionTimeout() {
+    clearInterval(this.questionTimerInterval);
+    this.endGame(false);
+  },
+  endGame(success) {
+    clearInterval(this.sessionTimerInterval);
+    clearInterval(this.questionTimerInterval);
+    const player = StateManager.getPlayer(UIManager.currentPlayer);
+    const timeSpent = Math.round(this.baseTime - Math.max(0, this.sessionTimeLeft));
+    const bonuses = [];
+    const isBoss = this.currentLevel === 40;
+    if (this.isTrainingMode) {
+      AudioManager.playVictory();
+      if (success) ParticleSystem.spawnVictoryConfetti(false);
+      UIManager.showTrainingResults(success, this.correctCount, this.mistakesCount, timeSpent);
+      return;
+    }
+    if (success) {
+      if (isBoss) AudioManager.playBossVictory();
+      else AudioManager.playVictory();
+      ParticleSystem.spawnVictoryConfetti(isBoss);
+      let starsEarned = Math.max(1, this.baseTime - timeSpent);
+      if (this.mistakesCount === 0 && this.correctCount === this.targetCorrect) {
+        starsEarned += 20;
+        bonuses.push('+20 за идеальную серию');
+      }
+      if (timeSpent < 60) {
+        starsEarned += 30;
+        bonuses.push('+30 «Реакция пилота»');
+      }
+      if (isBoss) {
+        starsEarned *= 2;
+        bonuses.push('×2 за МЕГА-экзамен');
+      }
+      const newStars = player.stars + starsEarned;
+      let unlockedLevels = [...player.unlockedLevels];
+      let currentLevel = player.currentLevel;
+      let examPassed = player.examPassed || false;
+      let diploma = player.diploma || false;
+      let lastCompletedLevel = player.lastCompletedLevel || 0;
+      if (isBoss) {
+        if (!examPassed) {
+          examPassed = true;
+          diploma = true;
+          if (!player.badges.includes('Выпускник 1 курса Академии')) {
+            player.badges = [...(player.badges || []), 'Выпускник 1 курса Академии'];
+          }
+          if (!player.badges.includes('Покоритель 40 миров')) {
+            player.badges = [...player.badges, 'Покоритель 40 миров'];
+          }
+        }
+        lastCompletedLevel = 40;
+      } else if (this.currentLevel === player.currentLevel && this.currentLevel < 40) {
+        if (!unlockedLevels.includes(this.currentLevel + 1)) {
+          unlockedLevels.push(this.currentLevel + 1);
+          AudioManager.playLevelUp();
+        }
+        currentLevel = this.currentLevel + 1;
+        lastCompletedLevel = Math.max(lastCompletedLevel, this.currentLevel);
+      }
+      const isNewBest = MotivationManager.updateBestScore(
+        UIManager.currentPlayer, this.currentLevel, timeSpent
+      );
+      if (isNewBest) bonuses.push('🏆 Новый рекорд!');
+      StateManager.updatePlayer(UIManager.currentPlayer, {
+        stars: newStars,
+        unlockedLevels: unlockedLevels,
+        currentLevel: currentLevel,
+        badges: player.badges,
+        examPassed: examPassed,
+        diploma: diploma,
+        lastCompletedLevel: lastCompletedLevel
+      });
+      const playerName = UIManager.currentPlayer;
+      fetch(`${API_BASE}/api/profile/${playerName}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          stars: newStars,
+          currentLevel: currentLevel,
+          unlockedLevels: unlockedLevels,
+          lastCompletedLevel: lastCompletedLevel,
+          badges: player.badges,
+          lives: player.lives
+        })
+      }).catch(err => console.warn('Не удалось сохранить на сервер:', err));
+      MotivationManager.addScore(UIManager.currentPlayer, timeSpent);
+      if (isBoss) {
+        UIManager.showResults(
+          true, this.correctCount, starsEarned, newStars, timeSpent,
+          player.lives, bonuses, true, this.isRetry
+        );
+      } else {
+        const updatedPlayer = StateManager.getPlayer(UIManager.currentPlayer);
+        const nextLevel = updatedPlayer.currentLevel;
+        const advanced = nextLevel === this.currentLevel + 1;
+        let msg = `🎉 Поздравляем!<br>Уровень пройден: +${starsEarned} ⭐`;
+        if (bonuses.length > 0) msg += '<br>' + bonuses.join('<br>');
+        if (advanced) {
+          const info = MathEngine.LEVELS[nextLevel - 1];
+          msg += `<br><span class="planet-intro-planet">Планета ${info.planet}</span>Уровень ${nextLevel}: ${info.name}`;
+        }
+        UIManager.showPlanetIntro(nextLevel, msg, 3500, () => {
+          UIManager.login(UIManager.currentPlayer);
+        });
+      }
+    } else {
+      AudioManager.playLifeLost();
+      const newLives = Math.max(0, player.lives - 1);
+      StateManager.updatePlayer(UIManager.currentPlayer, { lives: newLives });
+      UIManager.showResults(
+        false, this.correctCount, 0, player.stars, timeSpent,
+        newLives, [], isBoss, this.isRetry
+      );
+    }
+  },
+  quitGame() {
+    clearInterval(this.sessionTimerInterval);
+    clearInterval(this.questionTimerInterval);
+    UIManager.login(UIManager.currentPlayer);
+  }
+};
+
+// ============================================================================
+// БЛОК 12: УПРАВЛЕНИЕ ИНТЕРФЕЙСОМ (UIManager)
+// ============================================================================
+const UIManager = {
+  currentPlayer: null,
+  selectedGrade: 1,
+  hintModal: null,
+  init() {
+    ParticleSystem.init();
+    DefinitionsManager.init();
+    this.bindEvents();
+    this.playIntroSplash();
+  },
+  playIntroSplash() {
+    const splash = document.getElementById('splash-intro');
+    const starsBg = document.getElementById('splash-stars-bg');
+    const line1 = document.getElementById('splash-line-1');
+    const line2 = document.getElementById('splash-line-2');
+    const line3 = document.getElementById('splash-line-3');
+    if (!splash || !starsBg || !line1 || !line2 || !line3) {
+      this.finishIntro();
+      return;
+    }
+    starsBg.classList.add('animate-in');
+    setTimeout(() => { starsBg.classList.add('animate-rotate'); line1.classList.add('animate-in'); }, 800);
+    setTimeout(() => { line1.classList.remove('animate-in'); line1.classList.add('animate-out'); }, 6500);
+    setTimeout(() => { line2.classList.add('animate-in'); }, 7200);
+    setTimeout(() => { line2.classList.remove('animate-in'); line2.classList.add('animate-out'); }, 10000);
+    setTimeout(() => { line3.classList.add('animate-in'); }, 10700);
+    setTimeout(() => { line3.classList.remove('animate-in'); line3.classList.add('animate-out'); }, 13200);
+    setTimeout(() => {
+      splash.style.background = 'rgba(0,0,0,0.95)';
+      starsBg.style.transition = 'opacity 1s ease';
+      starsBg.style.opacity = '0.3';
+    }, 13700);
+    setTimeout(() => {
+      splash.classList.add('hidden');
+      this.showLoginScreen();
+    }, 14300);
+  },
+  showLoginScreen() {
+    const text1 = document.getElementById('login-text-1');
+    const text2a = document.getElementById('login-text-2a');
+    const text2c = document.getElementById('login-text-2c');
+    const text2d = document.getElementById('login-text-2d');
+    const text3 = document.getElementById('login-text-3');
+    const content = document.getElementById('login-content');
+    [text1, text2a, text2c, text2d, text3].forEach(t => {
+      if (t) { t.classList.remove('visible', 'fade-out'); t.style.display = ''; t.style.opacity = ''; }
+    });
+    if (content) content.classList.add('hidden');
+    this.showScreen('screen-login');
+    setTimeout(() => { if (text1) text1.classList.add('visible'); }, 600);
+    setTimeout(() => { if (text1) text1.classList.add('fade-out'); }, 4400);
+    setTimeout(() => {
+      if (text1) text1.style.display = 'none';
+      if (text2a) text2a.classList.add('visible');
+    }, 5900);
+    setTimeout(() => { if (text2a) text2a.classList.add('fade-out'); }, 9700);
+    setTimeout(() => {
+      if (text2a) text2a.style.display = 'none';
+      if (text2c) text2c.classList.add('visible');
+    }, 11200);
+    setTimeout(() => { if (text2c) text2c.classList.add('fade-out'); }, 13500);
+    setTimeout(() => {
+      if (text2c) text2c.style.display = 'none';
+      if (text2d) text2d.classList.add('visible');
+    }, 15000);
+    setTimeout(() => { if (text2d) text2d.classList.add('fade-out'); }, 17300);
+    setTimeout(() => {
+      if (text2d) text2d.style.display = 'none';
+      if (text3) text3.classList.add('visible');
+    }, 18800);
+    setTimeout(() => { if (text3) text3.classList.add('fade-out'); }, 22400);
+    setTimeout(() => {
+      if (text3) text3.style.display = 'none';
+      if (content) {
+        content.classList.remove('hidden');
+        content.style.opacity = '0';
+        requestAnimationFrame(() => { content.style.opacity = '1'; });
+        this.renderPlayerList();
+      }
+      setTimeout(() => {
+        this.renderMenuLeaderboard();
+        const lb = document.getElementById('leaderboard-side');
+        const def = document.getElementById('definitions-side');
+        const isMobile = window.innerWidth < 900;
+        if (lb) {
+          if (isMobile) lb.classList.add('hidden');
+          else lb.classList.remove('hidden');
+        }
+        if (def) {
+          if (isMobile) def.classList.add('hidden');
+          else def.classList.remove('hidden');
+        }
+      }, 900);
+    }, 23600);
+  },
+  finishIntro() {
+    const data = StateManager.loadData();
+    if (data.currentPlayer && StateManager.getPlayer(data.currentPlayer)) {
+      this.login(data.currentPlayer);
+    } else {
+      this.showScreen('screen-login');
+      this.renderPlayerList();
+    }
+  },
+  showPlanetIntro(levelId, htmlText, holdMs, onDone) {
+    this.updatePlanetBackground(levelId);
+    PlanetIntro.show(levelId, htmlText, holdMs, onDone);
+  },
+  updatePlanetBackground(levelId) {
+    const bgEl = document.getElementById('planet-bg-image');
+    if (!bgEl) return;
+    const imagePath = `backgrounds/level-${levelId}.png`;
+    const img = new Image();
+    img.onload = () => {
+      bgEl.style.opacity = '0';
+      setTimeout(() => {
+        bgEl.style.backgroundImage = `url('${imagePath}')`;
+        bgEl.style.opacity = '1';
+      }, 300);
+    };
+    img.onerror = () => console.warn(`Фон не загружен: ${imagePath}`);
+    img.src = imagePath;
+  },
+  showScreen(screenId) {
+    document.querySelectorAll('.screen, #screen-login').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.modal-overlay').forEach(el => el.classList.add('hidden'));
+    const screen = document.getElementById(screenId);
+    if (screen) screen.classList.remove('hidden');
+    const leaderboard = document.getElementById('leaderboard-side');
+    const definitions = document.getElementById('definitions-side');
+    const isMobile = window.innerWidth < 900;
+    if (screenId === 'screen-menu' || screenId === 'screen-game') {
+      if (leaderboard) {
+        if (isMobile) leaderboard.classList.add('hidden');
+        else leaderboard.classList.remove('hidden');
+      }
+      if (definitions) {
+        if (isMobile) definitions.classList.add('hidden');
+        else definitions.classList.remove('hidden');
+      }
+    } else {
+      if (leaderboard) leaderboard.classList.add('hidden');
+      if (definitions) definitions.classList.add('hidden');
+    }
+  },
+  renderPlayerList() {
+    const listEl = document.getElementById('players-list');
+    if (!listEl) return;
+    const players = StateManager.getAllPlayers();
+    listEl.innerHTML = '';
+    Object.values(players).forEach(player => {
+      const card = document.createElement('div');
+      card.className = 'player-card';
+      card.innerHTML = `<span class="name">${player.name}</span><span class="info">⭐ ${player.stars} | ❤️ ${player.lives} | 🔥 ${player.streakDays} дн. | 📊 Ур.${player.lastCompletedLevel || 0}</span>`;
+      card.addEventListener('click', () => {
+        AudioManager.init();
+        this.login(player.name, true);
+      });
+      listEl.appendChild(card);
+    });
+  },
+  renderMenuLeaderboard() {
+    const list = document.getElementById('menu-leaderboard');
+    if (!list) return;
+    list.innerHTML = '';
+    const all = MotivationManager.getLeaderboard().slice(0, 5);
+    if (all.length === 0) {
+      list.innerHTML = '<div class="lb-empty">Пока нет пилотов. Стань первым!</div>';
+      return;
+    }
+    const medals = ['🥇', '', '', '4️', '5️⃣'];
+    const topClasses = ['top-1', 'top-2', 'top-3', '', ''];
+    all.forEach((p, i) => {
+      const item = document.createElement('div');
+      item.className = `lb-item ${topClasses[i]}`;
+      item.innerHTML = `<span>${medals[i]} ${p.name}</span><span>⭐ ${p.stars} | 📊 Ур.${p.lastCompletedLevel}</span>`;
+      list.appendChild(item);
+    });
+  },
+  login(playerName, withPlanetIntro = false) {
+    this.currentPlayer = playerName;
+    StateManager.setCurrentPlayer(playerName);
+    fetch(`${API_BASE}/api/profile/${playerName}`)
+      .then(res => {
+        if (res.status === 404) {
+          return fetch(`${API_BASE}/api/profile/create`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: playerName })
+          });
+        }
+        return res;
+      })
+      .catch(err => console.warn('Не удалось синхронизировать профиль:', err));
+    this.selectedGrade = StateManager.getSelectedGrade();
+    const motivationData = MotivationManager.checkDailyLogin(playerName);
+    const lives = MotivationManager.checkAndResetLives(playerName);
+    const player = StateManager.getPlayer(playerName);
+    const menuPlayerName = document.getElementById('menu-player-name');
+    const menuStars = document.getElementById('menu-stars');
+    const menuLives = document.getElementById('menu-lives');
+    const menuStreak = document.getElementById('menu-streak');
+    const menuRetries = document.getElementById('menu-retries');
+    if (menuPlayerName) menuPlayerName.textContent = `Привет, ${player.name}!`;
+    if (menuStars) menuStars.textContent = player.stars;
+    if (menuLives) menuLives.textContent = lives;
+    if (menuStreak) menuStreak.textContent = player.streakDays;
+    if (menuRetries) menuRetries.textContent = player.dailyRetries || 0;
+    const currentLevelDisplay = document.getElementById('current-level-display');
+    if (currentLevelDisplay) {
+      const levelInfo = MathEngine.LEVELS[player.currentLevel - 1];
+      currentLevelDisplay.textContent = `Планета ${levelInfo.planet} • Уровень ${player.currentLevel}: ${levelInfo.name}`;
+    }
+    this.updatePlanetBackground(player.currentLevel);
+    const playBtn = document.getElementById('btn-play');
+    if (playBtn) {
+      if (lives <= 0) {
+        playBtn.disabled = true;
+        playBtn.textContent = 'Нет жизней';
+      } else {
+        playBtn.disabled = false;
+        playBtn.textContent = 'Играть';
+      }
+    }
+    const bonusBanner = document.getElementById('daily-bonus-banner');
+    if (bonusBanner) {
+      if (motivationData.hasBonus) {
+        bonusBanner.classList.remove('hidden');
+        bonusBanner.onclick = () => this.showDailyModal(motivationData);
+      } else {
+        bonusBanner.classList.add('hidden');
+      }
+    }
+    const finish = () => {
+      this.renderMenuLeaderboard();
+      this.showScreen('screen-menu');
+    };
+    if (withPlanetIntro) {
+      const levelInfo = MathEngine.LEVELS[player.currentLevel - 1];
+      PlanetIntro.show(
+        player.currentLevel,
+        `<span class="planet-intro-planet">Планета ${levelInfo.planet}</span>Уровень ${player.currentLevel}: ${levelInfo.name}`,
+        2200, finish
+      );
+    } else {
+      finish();
+    }
+  },
+  showDailyModal(data) {
+    const modalStreak = document.getElementById('modal-streak-days');
+    const modalStars = document.getElementById('modal-stars-earned');
+    const badgeMsg = document.getElementById('modal-badge-msg');
+    const modalRetries = document.getElementById('modal-retries-info');
+    if (modalStreak) modalStreak.textContent = data.streak;
+    if (modalStars) modalStars.textContent = data.starsEarned || 20;
+    if (modalRetries) modalRetries.textContent = `Перепрохождений сегодня: ${data.dailyRetries}`;
+    if (badgeMsg) {
+      let html = '';
+      if (data.newBadge) html += `Новый бейдж: ${data.newBadge}!`;
+      if (data.streakBonus > 0) {
+        html += (html ? '<br>' : '') + `🔥 Серия ${data.streak} дней! Бонус +${data.streakBonus} ⭐`;
+      }
+      if (html) {
+        badgeMsg.innerHTML = html;
+        badgeMsg.classList.remove('hidden');
+      } else {
+        badgeMsg.classList.add('hidden');
+      }
+    }
+    const modal = document.getElementById('modal-daily');
+    if (modal) modal.classList.remove('hidden');
+  },
+  // v5.0 (задача 1.3): модальное окно подсказки создаётся динамически
+  ensureHintModal() {
+    if (this.hintModal) return this.hintModal;
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay hidden';
+    overlay.id = 'modal-hint';
+    overlay.innerHTML = `
+      <div class="modal">
+        <h2>💡 Подсказка</h2>
+        <p id="hint-text" style="color: var(--text-secondary); margin: 10px 0; line-height: 1.6;"></p>
+        <button id="btn-close-hint" class="game-btn btn-primary">Понятно, пробую снова!</button>
+      </div>`;
+    document.body.appendChild(overlay);
+    this.hintModal = overlay;
+    return overlay;
+  },
+  showHint(question, onClose) {
+    const overlay = this.ensureHintModal();
+    const textEl = overlay.querySelector('#hint-text');
+    const btn = overlay.querySelector('#btn-close-hint');
+    textEl.textContent = this.getHintText(question);
+    overlay.classList.remove('hidden');
+    btn.onclick = () => {
+      AudioManager.playClick();
+      overlay.classList.add('hidden');
+      if (onClose) onClose();
+    };
+  },
+  getHintText(question) {
+    const nums = String(question.question).match(/\d+/g) || [];
+    const a = nums[0] || '';
+    const b = nums[1] || '';
+    const correct = question.correct;
+    switch (question.type) {
+      case 'addition':
+      case 'addition_20':
+        return `Правило сложения: части соединяются в целое. Начни с числа ${a} и отсчитай вперёд ещё ${b} по одному. Получится ${correct}.`;
+      case 'subtraction':
+      case 'subtraction_20':
+        return `Правило вычитания: из целого убирают часть. Начни с числа ${a} и отсчитай назад ${b} по одному. Получится ${correct}.`;
+      case 'comparison':
+        return `Сравни по числовой линейке: больше то число, которое стоит правее. Между ${a} и ${b} нужен знак «${correct}».`;
+      case 'composition':
+        return `Разложение числа: ${a} — это ${b} и ещё сколько-то. Посчитай, сколько нужно прибавить к ${b}, чтобы получить ${a}. Ответ: ${correct}.`;
+      case 'difference':
+        return `«На сколько больше» — это вычитание: из большего (${a}) вычти меньшее (${b}). Получится ${correct}.`;
+      case 'increase_decrease':
+        return `Увеличить — значит прибавить (сложение). Уменьшить — значит отнять (вычитание). Правильный ответ: ${correct}.`;
+      case 'unknown':
+        return `Чтобы найти неизвестное слагаемое, из суммы вычти известную часть. Правильный ответ: ${correct}.`;
+      case 'parity':
+        return `Чётное число заканчивается на 0, 2, 4, 6, 8. Нечётное — на 1, 3, 5, 7, 9. Правильный ответ: ${correct}.`;
+      case 'place_value':
+        return `В двузначном числе первая цифра — десятки, вторая — единицы. Правильный ответ: ${correct}.`;
+      case 'group_count':
+      case 'pattern':
+        return `Посмотри, на сколько меняется число от шага к шагу, и продолжи ряд по этому правилу. Правильный ответ: ${correct}.`;
+      case 'measurement':
+        return `Вспомни: 1 дм = 10 см. Переведи дециметры в сантиметры и прибавь оставшиеся сантиметры. Правильный ответ: ${correct}.`;
+      default:
+        return `Не спеши: прочитай задание ещё раз и посчитай по порядку. Правильный ответ: ${correct}.`;
+    }
+  },
+  renderQuestion(question, correctCount, target) {
+    const correctCountEl = document.getElementById('correct-count');
+    const questionContainer = document.getElementById('question-container');
+    const gameLives = document.getElementById('game-lives');
+    const gameScreen = document.getElementById('screen-game');
+    if (correctCountEl) correctCountEl.textContent = correctCount;
+    if (gameScreen) {
+      if (GameManager.currentLevel === 40) gameScreen.classList.add('boss-level');
+      else gameScreen.classList.remove('boss-level');
+    }
+    if (questionContainer) {
+      questionContainer.innerHTML = '';
+      if (question.story) {
+        const storyDiv = document.createElement('div');
+        storyDiv.className = 'question-story';
+        storyDiv.textContent = question.story;
+        questionContainer.appendChild(storyDiv);
+      }
+      const visualData = question.visual || question.visualEmoji;
+      if (visualData) {
+        const visualDiv = document.createElement('div');
+        visualDiv.className = 'question-visual';
+        if (Array.isArray(visualData) && visualData.length > 0) {
+          visualDiv.textContent = visualData.join(' ');
+        } else if (typeof visualData === 'string') {
+          const count = question.correct || 5;
+          const visualArray = [];
+          for (let i = 0; i < count; i++) visualArray.push(visualData);
+          visualDiv.textContent = visualArray.join(' ');
+        }
+        questionContainer.appendChild(visualDiv);
+      }
+      const questionText = document.createElement('div');
+      questionText.className = 'question-text';
+      questionText.textContent = question.question;
+      questionContainer.appendChild(questionText);
+    }
+    const player = StateManager.getPlayer(this.currentPlayer);
+    if (gameLives) {
+      let hearts = '';
+      for (let i = 0; i < 3; i++) {
+        hearts += i < player.lives ? '❤️' : '🖤';
+      }
+      gameLives.textContent = hearts;
+    }
+    const grid = document.getElementById('options-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const answerIcon = this.getAnswerIcon(question);
+    question.options.forEach(option => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.dataset.value = String(option);
+      if (question.type === 'comparison' || question.type === 'parity' || question.type === 'true_false') {
+        btn.classList.add('option-symbol');
+      }
+      if (answerIcon) {
+        btn.classList.add('option-with-icon');
+        btn.innerHTML = `<span class="option-value">${option}</span><span class="option-icon">${answerIcon}</span>`;
+      } else {
+        btn.textContent = option;
+      }
+      btn.addEventListener('click', (e) => GameManager.handleAnswer(option, e.target));
+      grid.appendChild(btn);
+    });
+    this.showScreen('screen-game');
+  },
+  getAnswerIcon(question) {
+    switch (question.type) {
+      case 'visual_count':
+        return (Array.isArray(question.visual) && question.visual[0]) ? question.visual[0] : '⭐';
+      case 'composition':
+        return '👽';
+      case 'measurement': {
+        const q = question.question || '';
+        if (q.includes('кг')) return '⚖️';
+        if (q.includes('см') || q.includes('дм')) return '📏';
+        if (q.includes('л')) return '🥛';
+        return '📏';
+      }
+      default:
+        return null;
+    }
+  },
+  updateSessionTimer(timeLeft) {
+    const clampedTime = Math.max(0, timeLeft);
+    const minutes = Math.floor(clampedTime / 60);
+    const seconds = Math.ceil(clampedTime % 60);
+    const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    const el = document.getElementById('session-timer');
+    if (el) {
+      el.textContent = display;
+      if (clampedTime <= 20) el.classList.add('danger');
+      else el.classList.remove('danger');
+    }
+  },
+  updateQuestionTimer(timeLeft, totalTime) {
+    const percent = (timeLeft / totalTime) * 100;
+    const timerFill = document.getElementById('timer-fill');
+    const timerText = document.getElementById('timer-text');
+    if (timerFill) timerFill.style.width = `${percent}%`;
+    if (timerText) timerText.textContent = Math.ceil(timeLeft);
+  },
+  showAnswerResult(isCorrect, selected, correct) {
+    const buttons = document.querySelectorAll('.option-btn');
+    buttons.forEach(btn => {
+      btn.disabled = true;
+      const text = btn.dataset.value !== undefined ? btn.dataset.value : btn.textContent;
+      const isCorrectAnswer = (typeof correct === 'number')
+        ? parseInt(text, 10) === correct
+        : text === String(correct);
+      const isSelected = (typeof selected === 'number')
+        ? parseInt(text, 10) === selected
+        : text === String(selected);
+      if (isCorrectAnswer) btn.classList.add('correct');
+      else if (isSelected && !isCorrect) btn.classList.add('wrong');
+    });
+  },
+  showFeedbackIcon(isCorrect) {
+    const container = document.getElementById('question-container');
+    if (!container) return;
+    const icon = document.createElement('div');
+    icon.className = 'feedback-icon';
+    icon.textContent = isCorrect ? '✓' : '✗';
+    icon.style.cssText = `position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 8rem; font-weight: 900; color: ${isCorrect ? '#96c93d' : '#ff4b2b'}; text-shadow: 0 0 30px ${isCorrect ? 'rgba(150,201,61,0.8)' : 'rgba(255,75,43,0.8)'}; z-index: 100; pointer-events: none;`;
+    container.style.position = 'relative';
+    container.appendChild(icon);
+    setTimeout(() => icon.remove(), 900);
+  },
+  showResults(success, correct, starsEarned, totalStars, timeSpent, lives, bonuses, isBoss = false, isRetry = false) {
+    const resultsTitle = document.getElementById('results-title');
+    const resultsMedal = document.getElementById('results-medal');
+    const resultsMessage = document.getElementById('results-message');
+    const resCorrect = document.getElementById('res-correct');
+    const resStars = document.getElementById('res-stars');
+    const resTotal = document.getElementById('res-total');
+    const resBonuses = document.getElementById('results-bonuses');
+    if (success) {
+      if (resultsTitle) resultsTitle.textContent = isBoss ? '🎓 МЕГА ЭКЗАМЕН СДАН!' : 'Отлично!';
+      if (resultsMedal) resultsMedal.textContent = isBoss ? '🎓' : '🏆';
+      if (resultsMessage) resultsMessage.textContent = `Ты уложился в ${timeSpent} секунд!`;
+    } else {
+      if (resultsTitle) resultsTitle.textContent = 'Время вышло!';
+      if (resultsMedal) resultsMedal.textContent = '💔';
+      if (resultsMessage) resultsMessage.textContent = `Потеряна 1 жизнь. Осталось: ${lives}`;
+    }
+    if (resCorrect) resCorrect.textContent = correct;
+    if (resStars) resStars.textContent = success ? `+${starsEarned}` : '0';
+    if (resTotal) resTotal.textContent = totalStars;
+    if (resBonuses) {
+      if (bonuses && bonuses.length > 0) {
+        resBonuses.innerHTML = '🎁 Бонусы: <br>' + bonuses.join('<br>');
+        resBonuses.style.display = 'block';
+      } else {
+        resBonuses.style.display = 'none';
+      }
+    }
+    const playAgainBtn = document.getElementById('btn-play-again');
+    if (playAgainBtn) {
+      if (!success && lives <= 0) {
+        playAgainBtn.disabled = true;
+        playAgainBtn.textContent = 'Нет жизней';
+      } else {
+        playAgainBtn.disabled = false;
+        playAgainBtn.textContent = 'Играть ещё';
+      }
+    }
+    this.showScreen('screen-results');
+  },
+  showTrainingResults(success, correct, mistakes, timeSpent) {
+    const resultsTitle = document.getElementById('results-title');
+    const resultsMedal = document.getElementById('results-medal');
+    const resultsMessage = document.getElementById('results-message');
+    const resCorrect = document.getElementById('res-correct');
+    const resStars = document.getElementById('res-stars');
+    const resTotal = document.getElementById('res-total');
+    const resBonuses = document.getElementById('results-bonuses');
+    if (resultsTitle) resultsTitle.textContent = success ? '🎯 ТРЕНИРОВКА ЗАВЕРШЕНА!' : 'Тренировка окончена';
+    if (resultsMedal) resultsMedal.textContent = success ? '🌟' : '💪';
+    if (resultsMessage) {
+      resultsMessage.textContent = success
+        ? `Отличная работа! Правильных: ${correct} из ${GameManager.targetCorrect}. Время: ${timeSpent} сек.`
+        : `Правильных: ${correct} из ${GameManager.targetCorrect}. Ошибок: ${mistakes}.`;
+    }
+    if (resCorrect) resCorrect.textContent = correct;
+    if (resStars) resStars.textContent = '—';
+    if (resTotal) resTotal.textContent = '—';
+    if (resBonuses) {
+      resBonuses.innerHTML = 'ℹ️ В режиме тренировки звёзды и прогресс не сохраняются. <br>Жизни не тратятся.';
+      resBonuses.style.display = 'block';
+    }
+    const playAgainBtn = document.getElementById('btn-play-again');
+    if (playAgainBtn) {
+      playAgainBtn.disabled = false;
+      playAgainBtn.textContent = 'Ещё раз';
+    }
+    this.showScreen('screen-results');
+  },
+  async renderLevelSelector() {
+    const player = StateManager.getPlayer(this.currentPlayer);
+    const selector = document.getElementById('level-selector');
+    if (!selector) return;
+    selector.innerHTML = '<div class="question-text">🌌 Загружаем карту галактики...</div>';
+    let levels = MathEngine.LEVELS;
+    try {
+      const response = await fetch(`${API_BASE}/api/levels`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.levels) {
+          levels = data.levels;
+        }
+      }
+    } catch (error) {
+      console.warn('Не удалось загрузить уровни с сервера, используем локальные данные:', error);
+    }
+    selector.innerHTML = '';
+    levels.forEach(level => {
+      const isUnlocked = player.unlockedLevels.includes(level.id);
+      const isCurrent = player.currentLevel === level.id;
+      const isBoss = level.id === 40;
+      const canRetry = player.dailyRetries > 0 && isUnlocked && level.id <= (player.lastCompletedLevel || 0);
+      const adjustedTime = level.baseTime || MathEngine.getAdjustedTime(level.id);
+      const timeStr = `${Math.floor(adjustedTime / 60)}:${(adjustedTime % 60).toString().padStart(2, '0')}`;
+      const item = document.createElement('div');
+      item.className = 'level-item';
+      if (!isUnlocked) item.classList.add('unpassed');
+      if (isCurrent) item.classList.add('active');
+      if (isBoss) item.classList.add('boss-level-item');
+      let statusIcon = '✓';
+      if (!isUnlocked) statusIcon = '🔒';
+      else if (isCurrent) statusIcon = '▶';
+      if (isBoss && player.examPassed) statusIcon = '👑';
+      item.innerHTML = `<span class="level-number">${level.id}</span><span class="level-name">${level.planet} • ${level.name} (${timeStr})</span><span class="level-status">${statusIcon}</span>`;
+      item.addEventListener('click', () => {
+        if (!isUnlocked) return;
+        AudioManager.init();
+        AudioManager.playClick();
+        if (canRetry && !isCurrent) {
+          const retriesLeft = MotivationManager.useRetry(this.currentPlayer);
+          if (retriesLeft >= 0) {
+            StateManager.updatePlayer(this.currentPlayer, { dailyRetries: retriesLeft });
+            GameManager.startGame(level.id, true);
+          } else {
+            alert('Нет перепрохождений на сегодня!');
+          }
+        } else {
+          StateManager.updatePlayer(this.currentPlayer, { currentLevel: level.id });
+          this.renderLevelSelector();
+          this.updatePlanetBackground(level.id);
+        }
+      });
+      selector.appendChild(item);
+    });
+    const activeItem = selector.querySelector('.level-item.active');
+    if (activeItem) activeItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  },
+  renderTrainingLevels() {
+    const list = document.getElementById('training-level-list');
+    if (!list) return;
+    list.innerHTML = '';
+    MathEngine.LEVELS.forEach(level => {
+      const adjustedTime = MathEngine.getAdjustedTime(level.id);
+      const timeStr = `${Math.floor(adjustedTime / 60)}:${(adjustedTime % 60).toString().padStart(2, '0')}`;
+      const btn = document.createElement('div');
+      btn.className = 'training-level-btn';
+      btn.innerHTML = `<span class="level-num">${level.id}</span><span class="level-name">${level.planet}<br>${level.name} ⏱ ${timeStr}</span>`;
+      btn.addEventListener('click', () => {
+        AudioManager.init();
+        AudioManager.playClick();
+        const modal = document.getElementById('modal-training');
+        if (modal) modal.classList.add('hidden');
+        GameManager.startTraining(level.id);
+      });
+      list.appendChild(btn);
+    });
+  },
+  renderSettings() {
+    const soundEnabled = SettingsManager.isSoundEnabled();
+    const soundToggle = document.getElementById('sound-toggle');
+    if (soundToggle) soundToggle.checked = soundEnabled;
+    const resetSection = document.getElementById('reset-section');
+    if (resetSection) {
+      if (this.currentPlayer === 'Вулкан') resetSection.style.display = 'block';
+      else resetSection.style.display = 'none';
+    }
+    this.renderLevelSelector();
+  },
+  renderCabinet() {
+    const player = StateManager.getPlayer(this.currentPlayer);
+    const cabinetPlayerName = document.getElementById('cabinet-player-name');
+    const cabStars = document.getElementById('cab-stars');
+    const cabStreak = document.getElementById('cab-streak');
+    const cabLastLevel = document.getElementById('cab-last-level');
+    const cabRetries = document.getElementById('cab-retries');
+    if (cabinetPlayerName) cabinetPlayerName.textContent = player.name;
+    if (cabStars) cabStars.textContent = player.stars;
+    if (cabStreak) cabStreak.textContent = player.streakDays;
+    if (cabLastLevel) cabLastLevel.textContent = player.lastCompletedLevel || 0;
+    if (cabRetries) cabRetries.textContent = player.dailyRetries || 0;
+    const cab = document.getElementById('screen-cabinet');
+    let dip = document.getElementById('diploma-box');
+    if (dip) dip.remove();
+    if (player.diploma || player.examPassed) {
+      dip = document.createElement('div');
+      dip.id = 'diploma-box';
+      dip.className = 'diploma-box';
+      dip.innerHTML = `<div class="diploma-title">🎓 ДИПЛОМ 1 КУРСА</div><div class="diploma-text">Академия звёздных математиков<br>Выпускник: <b>${player.name}</b><br>Курс 1 сдан — планета Корония покорена 👑</div>`;
+      const lb = cab.querySelector('.settings-section');
+      if (lb) cab.insertBefore(dip, lb);
+    }
+    const lbList = document.getElementById('leaderboard-list');
+    if (!lbList) return;
+    lbList.innerHTML = '';
+    const leaderboard = MotivationManager.getLeaderboard().slice(0, 5);
+    if (leaderboard.length === 0) {
+      lbList.innerHTML = '<p style="color: #a8d8ff; margin-top: 10px;">Пока нет рекордов. Сыграй первую игру!</p>';
+    } else {
+      const medals = ['🥇', '🥈', '', '4️', '5️⃣'];
+      leaderboard.forEach((entry, index) => {
+        const div = document.createElement('div');
+        div.className = `lb-item ${index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : ''}`;
+        div.innerHTML = `<span>${medals[index]} ${entry.name}</span><span>⭐ ${entry.stars} | 📊 Ур.${entry.lastCompletedLevel} | 🏁 ${entry.bestScore} сек</span>`;
+        lbList.appendChild(div);
+      });
+    }
+  },
+  bindEvents() {
+    const btnCreate = document.getElementById('btn-create-player');
+    const btnClaimDaily = document.getElementById('btn-claim-daily');
+    const btnLogout = document.getElementById('btn-logout');
+    const btnPlay = document.getElementById('btn-play');
+    const btnTraining = document.getElementById('btn-training');
+    const btnCloseTraining = document.getElementById('btn-close-training');
+    const btnQuitGame = document.getElementById('btn-quit-game');
+    const btnPlayAgain = document.getElementById('btn-play-again');
+    const btnBackMenu = document.getElementById('btn-back-menu');
+    const btnCabinet = document.getElementById('btn-cabinet');
+    const btnBackCabinet = document.getElementById('btn-back-cabinet');
+    const btnSettings = document.getElementById('btn-settings');
+    const btnBackSettings = document.getElementById('btn-back-settings');
+    const soundToggle = document.getElementById('sound-toggle');
+    const btnResetProgress = document.getElementById('btn-reset-progress');
+    const btnConfirmReset = document.getElementById('btn-confirm-reset');
+    const btnCancelReset = document.getElementById('btn-cancel-reset');
+    const btnRules = document.getElementById('btn-rules');
+    const btnCloseRules = document.getElementById('btn-close-rules');
+    const btnLbMobile = document.getElementById('btn-lb-mobile');
+    const btnRefMobile = document.getElementById('btn-ref-mobile');
+    if (btnCreate) {
+      btnCreate.addEventListener('click', () => {
+        const input = document.getElementById('new-player-name');
+        if (!input) return;
+        const name = input.value.trim();
+        if (name.length < 2) { alert('Имя должно быть не короче 2 символов!'); return; }
+        if (StateManager.getAllPlayers()[name]) { alert('Такое имя уже есть! Выбери его из списка.'); return; }
+        input.value = '';
+        this.login(name, true);
+      });
+    }
+    if (btnClaimDaily) {
+      btnClaimDaily.addEventListener('click', () => {
+        const newStars = MotivationManager.claimDailyBonus(this.currentPlayer);
+        const menuStars = document.getElementById('menu-stars');
+        const dailyBanner = document.getElementById('daily-bonus-banner');
+        const modalDaily = document.getElementById('modal-daily');
+        if (menuStars) menuStars.textContent = newStars;
+        if (dailyBanner) dailyBanner.classList.add('hidden');
+        if (modalDaily) modalDaily.classList.add('hidden');
+        this.renderMenuLeaderboard();
+      });
+    }
+    if (btnLogout) {
+      btnLogout.addEventListener('click', () => {
+        this.currentPlayer = null;
+        StateManager.setCurrentPlayer(null);
+        this.renderPlayerList();
+        this.showScreen('screen-login');
+      });
+    }
+    if (btnPlay) btnPlay.addEventListener('click', () => GameManager.startGame());
+    if (btnQuitGame) btnQuitGame.addEventListener('click', () => GameManager.quitGame());
+    if (btnPlayAgain) btnPlayAgain.addEventListener('click', () => GameManager.startGame());
+    if (btnBackMenu) btnBackMenu.addEventListener('click', () => this.login(this.currentPlayer));
+    if (btnTraining) {
+      btnTraining.addEventListener('click', () => {
+        AudioManager.init();
+        AudioManager.playClick();
+        this.renderTrainingLevels();
+        const modal = document.getElementById('modal-training');
+        if (modal) modal.classList.remove('hidden');
+      });
+    }
+    if (btnCloseTraining) {
+      btnCloseTraining.addEventListener('click', () => {
+        AudioManager.init();
+        AudioManager.playClick();
+        const modal = document.getElementById('modal-training');
+        if (modal) modal.classList.add('hidden');
+      });
+    }
+    if (btnRules) {
+      btnRules.addEventListener('click', () => {
+        AudioManager.init();
+        AudioManager.playClick();
+        const modal = document.getElementById('modal-rules');
+        if (modal) modal.classList.remove('hidden');
+      });
+    }
+    if (btnCloseRules) {
+      btnCloseRules.addEventListener('click', () => {
+        AudioManager.init();
+        AudioManager.playClick();
+        const modal = document.getElementById('modal-rules');
+        if (modal) modal.classList.add('hidden');
+      });
+    }
+    if (btnLbMobile) {
+      btnLbMobile.addEventListener('click', () => {
+        AudioManager.init();
+        AudioManager.playClick();
+        const lb = document.getElementById('leaderboard-side');
+        if (lb) {
+          lb.classList.toggle('hidden');
+          const def = document.getElementById('definitions-side');
+          if (def && !def.classList.contains('hidden')) def.classList.add('hidden');
+        }
+      });
+    }
+    if (btnRefMobile) {
+      btnRefMobile.addEventListener('click', () => {
+        AudioManager.init();
+        AudioManager.playClick();
+        const def = document.getElementById('definitions-side');
+        if (def) {
+          def.classList.toggle('hidden');
+          const lb = document.getElementById('leaderboard-side');
+          if (lb && !lb.classList.contains('hidden')) lb.classList.add('hidden');
+        }
+      });
+    }
+    if (btnCabinet) {
+      btnCabinet.addEventListener('click', () => {
+        this.renderCabinet();
+        this.showScreen('screen-cabinet');
+      });
+    }
+    if (btnBackCabinet) btnBackCabinet.addEventListener('click', () => this.login(this.currentPlayer));
+    if (btnSettings) {
+      btnSettings.addEventListener('click', () => {
+        this.renderSettings();
+        this.showScreen('screen-settings');
+      });
+    }
+    if (btnBackSettings) btnBackSettings.addEventListener('click', () => this.login(this.currentPlayer));
+    if (soundToggle) {
+      soundToggle.addEventListener('change', (e) => {
+        SettingsManager.setSoundEnabled(e.target.checked);
+        if (e.target.checked) {
+          AudioManager.init();
+          AudioManager.playClick();
+        }
+      });
+    }
+    let currentGateAnswer = 0;
+    let gateTimerInterval = null;
+    let gateTimeLeft = 10;
+    const startGateTimer = () => {
+      gateTimeLeft = 10;
+      const fillEl = document.getElementById('gate-timer-fill');
+      const textEl = document.getElementById('gate-timer-text');
+      if (fillEl) fillEl.style.width = '100%';
+      if (textEl) {
+        textEl.textContent = '10.0';
+        textEl.classList.remove('danger');
+      }
+      clearInterval(gateTimerInterval);
+      gateTimerInterval = setInterval(() => {
+        gateTimeLeft -= 0.1;
+        if (fillEl) fillEl.style.width = `${Math.max(0, (gateTimeLeft / 10) * 100)}%`;
+        if (textEl) {
+          textEl.textContent = Math.max(0, gateTimeLeft).toFixed(1);
+          if (gateTimeLeft <= 3) textEl.classList.add('danger');
+        }
+        if (gateTimeLeft <= 0) {
+          clearInterval(gateTimerInterval);
+          const modal = document.getElementById('modal-reset');
+          if (modal) modal.classList.add('hidden');
+          AudioManager.playWrong();
+        }
+      }, 100);
+    };
+    const openResetModal = () => {
+      const a = Math.floor(Math.random() * 40) + 10;
+      const b = Math.floor(Math.random() * 40) + 10;
+      currentGateAnswer = a + b;
+      const qEl = document.getElementById('gate-math-question');
+      const inputEl = document.getElementById('gate-math-input');
+      const errorEl = document.getElementById('gate-math-error');
+      const modal = document.getElementById('modal-reset');
+      if (qEl) qEl.textContent = `${a} + ${b} = ?`;
+      if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+      if (errorEl) errorEl.classList.add('hidden');
+      if (modal) modal.classList.remove('hidden');
+      startGateTimer();
+    };
+    const checkResetGate = () => {
+      const inputEl = document.getElementById('gate-math-input');
+      const errorEl = document.getElementById('gate-math-error');
+      if (!inputEl) return;
+      const userAnswer = parseInt(inputEl.value);
+      if (userAnswer === currentGateAnswer) {
+        clearInterval(gateTimerInterval);
+        StateManager.resetAll();
+        UIManager.currentPlayer = null;
+        location.reload();
+      } else {
+        if (errorEl) errorEl.classList.remove('hidden');
+        inputEl.value = '';
+        inputEl.focus();
+        AudioManager.playWrong();
+      }
+    };
+    if (btnResetProgress) btnResetProgress.addEventListener('click', openResetModal);
+    if (btnConfirmReset) btnConfirmReset.addEventListener('click', checkResetGate);
+    if (btnCancelReset) {
+      btnCancelReset.addEventListener('click', () => {
+        clearInterval(gateTimerInterval);
+        const modal = document.getElementById('modal-reset');
+        if (modal) modal.classList.add('hidden');
+      });
+    }
+    const gateInput = document.getElementById('gate-math-input');
+    if (gateInput) {
+      gateInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkResetGate();
+      });
+    }
+    window.addEventListener('resize', () => {
+      const isMobile = window.innerWidth < 900;
+      const leaderboard = document.getElementById('leaderboard-side');
+      const definitions = document.getElementById('definitions-side');
+      const currentScreen = document.querySelector('.screen:not(.hidden)');
+      if (currentScreen && (currentScreen.id === 'screen-menu' || currentScreen.id === 'screen-game')) {
+        if (!isMobile) {
+          if (leaderboard) leaderboard.classList.remove('hidden');
+          if (definitions) definitions.classList.remove('hidden');
+        }
+      }
+    });
+  }
+};
+
+// ============================================================================
+// БЛОК 13: ТОЧКА ВХОДА
+// ============================================================================
+document.addEventListener('DOMContentLoaded', () => {
+  UIManager.init();
+});

@@ -1,0 +1,9 @@
+{
+  "name": "academy-stars-math",
+  "version": "4.1.0",
+  "private": true,
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

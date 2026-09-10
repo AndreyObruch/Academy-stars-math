@@ -1,16 +1,21 @@
-/* АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.6 — service worker (P2: офлайн) */
-const CACHE_NAME = 'cosmo-quest-v4.6';
+/* АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.7 — service worker (P2: офлайн) */
+const CACHE_NAME = 'cosmo-quest-v4.7';
 const PRECACHE_URLS = [
   '/',
   '/index.html',
   '/style.css',
   '/script.js',
-  '/manifest.json'
+  '/manifest.json',
+  '/backgrounds/stars-bg.png',
+  '/backgrounds/login-bg.jpg',
+  '/backgrounds/level-1.png'
 ];
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(PRECACHE_URLS))
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(PRECACHE_URLS))
+      .catch(err => console.warn('Precache частичный:', err))
   );
   self.skipWaiting();
 });
@@ -41,18 +46,19 @@ self.addEventListener('fetch', event => {
     );
     return;
   }
-  // Статика и шрифты: cache-first, затем сеть с записью в кэш
+  // Статика: stale-while-revalidate — кэш сразу, обновление фоном
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        const sameOrigin = event.request.url.startsWith(self.location.origin);
-        if (response.ok && (sameOrigin || response.type === 'cors')) {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
-        }
-        return response;
-      });
-    })
+    caches.open(CACHE_NAME).then(cache =>
+      cache.match(event.request).then(cached => {
+        const network = fetch(event.request).then(response => {
+          const sameOrigin = event.request.url.startsWith(self.location.origin);
+          if (response.ok && (sameOrigin || response.type === 'cors')) {
+            cache.put(event.request, response.clone());
+          }
+          return response;
+        }).catch(() => cached);
+        return cached || network;
+      })
+    )
   );
 });

@@ -1,6 +1,6 @@
 /* ============================================
-АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.8
-P7: прогресс-бары тем в кабинете
+АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.8.4
+Детская выгнутая надпись «МАТЕМАТИКА 1 КЛАСС» (SVG-дуга)
 ============================================ */
 :root {
 --bg-primary: #090a0f;
@@ -397,6 +397,23 @@ color: var(--text-secondary);
 margin-bottom: 24px;
 font-size: 1.1rem;
 text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+/* Детская выгнутая вверх надпись (SVG textPath) */
+.subtitle-arc {
+display: block;
+width: min(92%, 400px);
+height: 80px;
+margin: 0 auto 18px;
+overflow: visible;
+animation: playfulPulse 3s ease-in-out infinite;
+filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+}
+.subtitle-arc text {
+fill: #a8d8ff;
+font-family: 'Comfortaa', cursive;
+font-weight: 700;
+font-size: 27px;
+letter-spacing: 2px;
 }
 .players-list {
 display: flex;
@@ -842,7 +859,6 @@ font-size: 0.85rem;
 color: var(--text-secondary);
 margin-top: 4px;
 }
-/* P7: прогресс-бары тем в кабинете */
 .progress-topic {
 margin-bottom: 12px;
 text-align: left;
@@ -1528,6 +1544,8 @@ body { padding: 10px; align-items: flex-start; padding-top: 20px; }
 .btn-play { font-size: 1.1rem; padding: 16px; }
 .btn-training { font-size: 1.05rem; padding: 16px; }
 .btn-mistakes { font-size: 1rem; padding: 16px; }
+.subtitle-arc { width: min(96%, 340px); height: 66px; }
+.subtitle-arc text { font-size: 23px; }
 .leaderboard-side { width: calc(100% - 20px); left: 50%; right: auto; transform: translateX(-50%); bottom: 70px; padding: 14px; }
 .definitions-side { width: calc(100% - 20px); left: 50%; right: auto; transform: translateX(-50%); bottom: 150px; padding: 14px; }
 .btn-lb-mobile { bottom: 15px; left: 10px; padding: 10px; font-size: 0.9rem; }

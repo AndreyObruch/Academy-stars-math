@@ -39,7 +39,14 @@
 
         <div class="login-content hidden" id="login-content">
             <h1 class="game-title login-title">Академия Звёздных Математиков</h1>
-            <p class="subtitle">МАТЕМАТИКА 1 КЛАСС</p>
+            <svg class="subtitle-arc" viewBox="0 0 420 80" role="img" aria-label="Математика 1 класс">
+                <defs>
+                    <path id="subtitle-arc-path" d="M 15 68 Q 210 8 405 68" fill="none"/>
+                </defs>
+                <text>
+                    <textPath href="#subtitle-arc-path" startOffset="50%" text-anchor="middle">✨ МАТЕМАТИКА 1 КЛАСС ✨</textPath>
+                </text>
+            </svg>
 
             <input type="text" class="name-input" id="new-player-name" placeholder="Создать профиль" maxlength="20">
             <button class="game-btn btn-primary" id="btn-create-player">Создать профиль</button>

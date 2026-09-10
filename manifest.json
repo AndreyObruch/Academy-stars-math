@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "Академия Звёздных Математиков",
   "short_name": "Звёздная математика",
   "description": "Обучающая математическая игра для детей 6–10 лет: 40 планет-уровней",
@@ -12,15 +13,15 @@
   "icons": [
     {
       "src": "backgrounds/level-1.png",
-      "sizes": "192x192",
+      "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any"
     },
     {
       "src": "backgrounds/level-1.png",
-      "sizes": "512x512",
+      "sizes": "1024x1024",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "maskable"
     }
   ]
 }

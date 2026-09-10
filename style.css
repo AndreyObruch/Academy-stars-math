@@ -1,6 +1,6 @@
 /* ============================================
-АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.4
-Заставка: золотое пламя + голубой пилот
+АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.5
+Заставка: насыщенное золотое пламя + яркий синий
 ============================================ */
 :root {
 --bg-primary: #090a0f;
@@ -175,16 +175,16 @@ font-size: clamp(2rem, 7.5vw, 4rem);
 letter-spacing: 4px;
 font-family: 'Lobster', cursive;
 }
-/* НОВОЕ: нежно-золотое пламя для строки 1 */
+/* ПРАВКА 1: НАСЫЩЕННОЕ золотое пламя для строки 1 */
 .gold-flame-text {
-background: linear-gradient(90deg, #ffd700 0%, #ffec8b 25%, #ffd700 50%, #ffec8b 75%, #ffd700 100%);
+background: linear-gradient(90deg, #ffc400 0%, #ffe066 25%, #ffb300 50%, #ffe066 75%, #ffc400 100%);
 background-size: 200% auto;
 -webkit-background-clip: text;
 background-clip: text;
 -webkit-text-fill-color: transparent;
 color: transparent;
 animation: goldFlow 4s ease-in-out infinite;
-filter: drop-shadow(0 0 12px rgba(255,215,0,0.6)) drop-shadow(0 0 24px rgba(255,236,139,0.4));
+filter: drop-shadow(0 0 16px rgba(255,196,0,0.95)) drop-shadow(0 0 36px rgba(255,170,0,0.65));
 }
 @keyframes goldFlow {
 0%, 100% { background-position: 0% center; }
@@ -193,28 +193,28 @@ filter: drop-shadow(0 0 12px rgba(255,215,0,0.6)) drop-shadow(0 0 24px rgba(255,
 #splash-line-1.animate-in {
 animation: lineAppearSlow 2.6s ease-out forwards, goldFlow 4s ease-in-out infinite;
 }
-/* НОВОЕ: насыщенный золотой для строки 2 */
+/* ПРАВКА 2: ЯРКО-ЗОЛОТОЙ для строки 2 */
 .rich-gold-text {
-color: #FFD700;
-text-shadow: 0 0 20px rgba(255,215,0,1), 0 0 45px rgba(255,215,0,0.9), 0 0 70px rgba(255,180,0,0.7);
+color: #ffcc00;
+text-shadow: 0 0 22px rgba(255,204,0,1), 0 0 50px rgba(255,190,0,0.95), 0 0 80px rgba(255,170,0,0.75);
 animation: goldGlow 3s ease-in-out infinite;
 }
 @keyframes goldGlow {
-0%, 100% { text-shadow: 0 0 20px rgba(255,215,0,1), 0 0 45px rgba(255,215,0,0.9); }
-50% { text-shadow: 0 0 28px rgba(255,215,0,1), 0 0 60px rgba(255,215,0,1), 0 0 85px rgba(255,180,0,0.8); }
+0%, 100% { text-shadow: 0 0 22px rgba(255,204,0,1), 0 0 50px rgba(255,190,0,0.95); }
+50% { text-shadow: 0 0 30px rgba(255,204,0,1), 0 0 65px rgba(255,190,0,1), 0 0 95px rgba(255,170,0,0.85); }
 }
 #splash-line-2.animate-in {
 animation: lineAppearSoft 1.4s ease-out forwards;
 }
-/* НОВОЕ: сочно-голубой для строки 3 */
+/* ПРАВКА 3: ЯРКО-СИНИЙ для строки 3 */
 .vivid-blue-text {
-color: #00BFFF;
-text-shadow: 0 0 18px rgba(0,191,255,1), 0 0 42px rgba(0,150,255,0.9), 0 0 65px rgba(0,120,255,0.7);
+color: #0077ff;
+text-shadow: 0 0 20px rgba(0,119,255,1), 0 0 46px rgba(0,100,255,0.95), 0 0 72px rgba(0,80,255,0.75);
 animation: bluePulse 2.5s ease-in-out infinite;
 }
 @keyframes bluePulse {
-0%, 100% { text-shadow: 0 0 18px rgba(0,191,255,1), 0 0 42px rgba(0,150,255,0.9); }
-50% { text-shadow: 0 0 25px rgba(0,191,255,1), 0 0 55px rgba(0,150,255,1), 0 0 80px rgba(0,120,255,0.8); }
+0%, 100% { text-shadow: 0 0 20px rgba(0,119,255,1), 0 0 46px rgba(0,100,255,0.95); }
+50% { text-shadow: 0 0 28px rgba(0,119,255,1), 0 0 60px rgba(0,100,255,1), 0 0 88px rgba(0,80,255,0.85); }
 }
 #splash-line-3.animate-in {
 animation: lineDepth 2s cubic-bezier(.2,.8,.3,1) forwards;
@@ -302,18 +302,17 @@ transform: translate(-50%, -120%);
 opacity: 0;
 transform: translate(-50%, -120%);
 }
-/* НОВОЕ: алый цвет для вспышек на экране логина */
 .login-intro-text.crimson {
 color: #ff2400;
 text-shadow: 0 0 18px rgba(255,36,0,1), 0 0 40px rgba(255,36,0,0.7), 0 0 65px rgba(255,36,0,0.4);
 animation: crimsonFlash 2s ease-in-out;
 }
 @keyframes crimsonFlash {
-0%, 100% { 
+0%, 100% {
 text-shadow: 0 0 18px rgba(255,36,0,1), 0 0 40px rgba(255,36,0,0.7);
 transform: translate(-50%, -120%) scale(1);
 }
-50% { 
+50% {
 text-shadow: 0 0 28px rgba(255,36,0,1), 0 0 55px rgba(255,36,0,0.9), 0 0 80px rgba(255,36,0,0.6);
 transform: translate(-50%, -120%) scale(1.05);
 }
@@ -386,7 +385,6 @@ font-family: 'Russo One', sans-serif;
 text-shadow: 0 0 10px #fff, 0 0 20px var(--accent-primary);
 margin-bottom: 16px;
 }
-/* НОВОЕ: детский шрифт Comfortaa для финального титула на экране логина */
 .login-title {
 font-family: 'Comfortaa', cursive;
 color: #FF6B9D;

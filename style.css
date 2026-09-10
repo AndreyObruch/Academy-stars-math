@@ -1,6 +1,6 @@
 /* ============================================
-АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.8.4
-Детская выгнутая надпись «МАТЕМАТИКА 1 КЛАСС» (SVG-дуга)
+АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.10-lead
+Фаза 10: стили лид-формы (btn-lead, поля, consent, error/success)
 ============================================ */
 :root {
 --bg-primary: #090a0f;
@@ -398,7 +398,6 @@ margin-bottom: 24px;
 font-size: 1.1rem;
 text-shadow: 0 2px 8px rgba(0,0,0,0.8);
 }
-/* Детская выгнутая вверх надпись (SVG textPath) */
 .subtitle-arc {
 display: block;
 width: min(92%, 400px);
@@ -529,6 +528,13 @@ padding: 18px;
 .btn-mistakes {
 background: linear-gradient(135deg, #8e2de2, #4a00e0);
 box-shadow: 0 4px 15px rgba(74,0,224,0.4);
+font-size: 1.1rem;
+padding: 18px;
+}
+/* Фаза 10: кнопка лид-формы */
+.btn-lead {
+background: linear-gradient(135deg, #00b09b, #00c9ff);
+box-shadow: 0 4px 15px rgba(0,201,255,0.4);
 font-size: 1.1rem;
 padding: 18px;
 }
@@ -1166,6 +1172,84 @@ color: var(--warning);
 width: 100%;
 margin-top: 14px;
 }
+/* Фаза 10: лид-форма */
+.modal-lead {
+max-width: 420px;
+max-height: 88vh;
+overflow-y: auto;
+text-align: left;
+}
+.modal-lead h2 {
+text-align: center;
+}
+.lead-subtitle {
+color: var(--text-secondary);
+font-size: 0.95rem;
+margin: -6px 0 14px;
+text-align: center;
+line-height: 1.4;
+}
+.lead-input {
+margin-bottom: 10px;
+text-align: left;
+font-size: 1rem;
+padding: 13px 14px;
+}
+select.lead-input {
+cursor: pointer;
+appearance: none;
+-webkit-appearance: none;
+background-image: linear-gradient(45deg, transparent 50%, #a8d8ff 50%), linear-gradient(135deg, #a8d8ff 50%, transparent 50%);
+background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%;
+background-size: 6px 6px, 6px 6px;
+background-repeat: no-repeat;
+}
+select.lead-input option {
+background: #1b2735;
+color: #fff;
+}
+.lead-textarea {
+min-height: 90px;
+resize: vertical;
+font-family: inherit;
+line-height: 1.4;
+}
+.lead-consent {
+display: flex;
+align-items: flex-start;
+gap: 8px;
+font-size: 0.85rem;
+color: var(--text-secondary);
+margin: 4px 0 12px;
+cursor: pointer;
+line-height: 1.4;
+}
+.lead-consent input {
+width: 18px;
+height: 18px;
+margin-top: 1px;
+accent-color: var(--success);
+cursor: pointer;
+flex-shrink: 0;
+}
+.lead-error {
+color: #ff4b2b;
+font-size: 0.9rem;
+margin: 0 0 10px;
+text-align: center;
+font-weight: 600;
+}
+.lead-success {
+color: var(--success);
+font-size: 0.9rem;
+margin: 0 0 10px;
+text-align: center;
+font-weight: 600;
+}
+.modal-lead .game-btn {
+width: 100%;
+margin-top: 8px;
+}
 .planet-intro {
 position: fixed;
 top: 0;
@@ -1544,8 +1628,11 @@ body { padding: 10px; align-items: flex-start; padding-top: 20px; }
 .btn-play { font-size: 1.1rem; padding: 16px; }
 .btn-training { font-size: 1.05rem; padding: 16px; }
 .btn-mistakes { font-size: 1rem; padding: 16px; }
+.btn-lead { font-size: 1rem; padding: 16px; }
 .subtitle-arc { width: min(96%, 340px); height: 66px; }
 .subtitle-arc text { font-size: 23px; }
+.modal-lead { padding: 20px; }
+.lead-textarea { min-height: 70px; }
 .leaderboard-side { width: calc(100% - 20px); left: 50%; right: auto; transform: translateX(-50%); bottom: 70px; padding: 14px; }
 .definitions-side { width: calc(100% - 20px); left: 50%; right: auto; transform: translateX(-50%); bottom: 150px; padding: 14px; }
 .btn-lb-mobile { bottom: 15px; left: 10px; padding: 10px; font-size: 0.9rem; }

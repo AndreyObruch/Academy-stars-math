@@ -82,6 +82,7 @@
             <button class="game-btn btn-play" id="btn-play">🚀 Играть</button>
             <button class="game-btn btn-training" id="btn-training">🎯 Тренировка</button>
             <button class="game-btn btn-mistakes" id="btn-mistakes">📝 Работа над ошибками (0)</button>
+            <button class="game-btn btn-lead" id="btn-lead">💬 Связаться с нами</button>
             <button class="game-btn btn-cabinet" id="btn-cabinet">🏅 Мои награды</button>
             <button class="game-btn btn-rules" id="btn-rules">📜 Правила</button>
             <button class="game-btn btn-settings" id="btn-settings">⚙️ Настройки</button>
@@ -265,6 +266,32 @@
             <p style="color: #ff4b2b;" id="gate-math-error" class="gate-math-error hidden">❌ Неверно!</p>
             <button class="game-btn btn-danger" id="btn-confirm-reset">Подтвердить сброс</button>
             <button class="game-btn btn-secondary" id="btn-cancel-reset">Отмена</button>
+        </div>
+    </div>
+
+    <!-- ФАЗА 10: форма обратной связи (лид-форма) -->
+    <div class="modal-overlay hidden" id="modal-lead">
+        <div class="modal modal-lead">
+            <h2>💬 Связаться с нами</h2>
+            <p class="lead-subtitle">Для родителей: вопросы о программе, прогрессе ребёнка и подписке.</p>
+            <input type="text" class="name-input lead-input" id="lead-name" placeholder="Ваше имя" maxlength="40">
+            <input type="text" class="name-input lead-input" id="lead-contact" placeholder="Email или телефон" maxlength="60">
+            <select class="name-input lead-input" id="lead-grade">
+                <option value="">Класс ребёнка</option>
+                <option value="1">1 класс</option>
+                <option value="2">2 класс</option>
+                <option value="3">3 класс</option>
+                <option value="4">4 класс</option>
+            </select>
+            <textarea class="name-input lead-input lead-textarea" id="lead-message" placeholder="Ваш вопрос" maxlength="500"></textarea>
+            <label class="lead-consent">
+                <input type="checkbox" id="lead-consent">
+                <span>Согласен на обработку персональных данных (152-ФЗ)</span>
+            </label>
+            <p class="lead-error hidden" id="lead-error">❌ Заполните имя, контакт и поставьте галочку согласия</p>
+            <p class="lead-success hidden" id="lead-success">✅ Заявка отправлена! Мы свяжемся с вами.</p>
+            <button class="game-btn btn-primary" id="btn-lead-submit">Отправить</button>
+            <button class="game-btn btn-secondary" id="btn-lead-close">Закрыть</button>
         </div>
     </div>
 

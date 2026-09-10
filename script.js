@@ -1,7 +1,6 @@
 /**
- * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.8.3
- * Серверная генерация задач + синхронизация профилей
- * Фикс: results-bonuses показывался через style.display поверх .hidden !important → classList
+ * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.10-lead
+ * Фаза 10: LeadManager — лид-форма с офлайн-очередью и отправкой на /api/leads
  */
 const API_BASE = window.location.origin;
 
@@ -559,6 +558,90 @@ return this.load().slice(0, limit).map(item => item.question);
 },
 count() {
 return this.load().length;
+}
+};
+
+// ============================================================================
+// БЛОК 7C: ЛИД-ФОРМА (LeadManager) — ФАЗА 10
+// ============================================================================
+const LeadManager = {
+STORAGE_KEY: 'cosmoQuestLeads_v1',
+load() {
+try {
+const data = localStorage.getItem(this.STORAGE_KEY);
+return data ? JSON.parse(data) : [];
+} catch (e) {
+return [];
+}
+},
+save(list) {
+localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
+},
+isValidContact(contact) {
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const phoneRe = /^[\d+()\-\s]{10,20}$/;
+return emailRe.test(contact) || phoneRe.test(contact);
+},
+collect() {
+const name = (document.getElementById('lead-name')?.value || '').trim();
+const contact = (document.getElementById('lead-contact')?.value || '').trim();
+const grade = document.getElementById('lead-grade')?.value || '';
+const message = (document.getElementById('lead-message')?.value || '').trim();
+const consent = document.getElementById('lead-consent')?.checked || false;
+return { name: name, contact: contact, grade: grade, message: message, consent: consent };
+},
+validate(lead) {
+return lead.name.length >= 2 && this.isValidContact(lead.contact) && lead.consent === true;
+},
+async send(lead) {
+const response = await fetch(`${API_BASE}/api/leads`, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify(lead)
+});
+if (!response.ok) throw new Error('HTTP ' + response.status);
+return response.json();
+},
+// Верняет: 'invalid' | 'sent' | 'queued'
+async submit() {
+const lead = this.collect();
+if (!this.validate(lead)) return 'invalid';
+try {
+await this.send(lead);
+this.clearForm();
+return 'sent';
+} catch (err) {
+const queue = this.load();
+lead.date = new Date().toLocaleString();
+queue.push(lead);
+this.save(queue);
+this.clearForm();
+return 'queued';
+}
+},
+// Дозаправка очереди при появлении сети
+async flushQueue() {
+const queue = this.load();
+if (queue.length === 0) return;
+const rest = [];
+for (const lead of queue) {
+try {
+await this.send(lead);
+} catch (e) {
+rest.push(lead);
+}
+}
+this.save(rest);
+},
+clearForm() {
+['lead-name', 'lead-contact', 'lead-message'].forEach(id => {
+const el = document.getElementById(id);
+if (el) el.value = '';
+});
+const grade = document.getElementById('lead-grade');
+if (grade) grade.value = '';
+const consent = document.getElementById('lead-consent');
+if (consent) consent.checked = false;
 }
 };
 
@@ -1315,6 +1398,9 @@ ParticleSystem.init();
 DefinitionsManager.init();
 this.bindEvents();
 this.playIntroSplash();
+// Фаза 10: дозаправка очереди лидов при старте и при появлении сети
+LeadManager.flushQueue();
+window.addEventListener('online', () => LeadManager.flushQueue());
 },
 playIntroSplash() {
 const splash = document.getElementById('splash-intro');
@@ -1618,6 +1704,15 @@ badgeMsg.classList.add('hidden');
 const modal = document.getElementById('modal-daily');
 if (modal) modal.classList.remove('hidden');
 },
+// Фаза 10: открытие модалки лид-формы со сбросом сообщений
+openLeadModal() {
+const errEl = document.getElementById('lead-error');
+const okEl = document.getElementById('lead-success');
+if (errEl) errEl.classList.add('hidden');
+if (okEl) okEl.classList.add('hidden');
+const modal = document.getElementById('modal-lead');
+if (modal) modal.classList.remove('hidden');
+},
 renderQuestion(question, correctCount, target) {
 const correctCountEl = document.getElementById('correct-count');
 const questionContainer = document.getElementById('question-container');
@@ -1636,12 +1731,10 @@ storyDiv.className = 'question-story';
 storyDiv.textContent = question.story;
 questionContainer.appendChild(storyDiv);
 }
-// ФИКС v4.8.2: сервер шлёт visual массивом пустых строк — фильтруем
 let visualData = question.visual || question.visualEmoji;
 if (Array.isArray(visualData)) {
 visualData = visualData.filter(v => v !== null && v !== undefined && String(v).trim() !== '');
 }
-// Если после фильтра пусто у счётных типов — ряд ⭐ по правильному ответу
 if (
 (!visualData || (Array.isArray(visualData) && visualData.length === 0)) &&
 (question.type === 'visual_count' || question.type === 'visual_sequence')
@@ -1765,8 +1858,6 @@ if (resTotal) resTotal.textContent = '—';
 if (resBonuses) {
 resBonuses.innerHTML = 'ℹ️ Исправленные ошибки убраны из очереди.<br>Остальные вернутся в следующий раз.';
 resBonuses.classList.remove('hidden');
-} else if (resBonuses) {
-resBonuses.classList.add('hidden');
 }
 const playAgainBtn = document.getElementById('btn-play-again');
 if (playAgainBtn) {
@@ -1795,7 +1886,6 @@ if (resultsMessage) resultsMessage.textContent = `Потеряна 1 жизнь.
 if (resCorrect) resCorrect.textContent = correct;
 if (resStars) resStars.textContent = success ? `+${starsEarned}` : '0';
 if (resTotal) resTotal.textContent = totalStars;
-// ФИКС v4.8.3: classList вместо style.display (иначе .hidden !important побеждает)
 if (resBonuses) {
 if (bonuses && bonuses.length > 0) {
 resBonuses.innerHTML = 'Бонусы:<br>' + bonuses.join('<br>');
@@ -1981,6 +2071,9 @@ const btnLogout = document.getElementById('btn-logout');
 const btnPlay = document.getElementById('btn-play');
 const btnTraining = document.getElementById('btn-training');
 const btnMistakes = document.getElementById('btn-mistakes');
+const btnLead = document.getElementById('btn-lead');
+const btnLeadClose = document.getElementById('btn-lead-close');
+const btnLeadSubmit = document.getElementById('btn-lead-submit');
 const btnCloseTraining = document.getElementById('btn-close-training');
 const btnQuitGame = document.getElementById('btn-quit-game');
 const btnPlayAgain = document.getElementById('btn-play-again');
@@ -2046,6 +2139,40 @@ btnMistakes.addEventListener('click', () => {
 AudioManager.init();
 AudioManager.playClick();
 GameManager.startMistakeTraining();
+});
+}
+// Фаза 10: лид-форма — открытие, закрытие, отправка
+if (btnLead) {
+btnLead.addEventListener('click', () => {
+AudioManager.init();
+AudioManager.playClick();
+this.openLeadModal();
+});
+}
+if (btnLeadClose) {
+btnLeadClose.addEventListener('click', () => {
+AudioManager.playClick();
+const modal = document.getElementById('modal-lead');
+if (modal) modal.classList.add('hidden');
+});
+}
+if (btnLeadSubmit) {
+btnLeadSubmit.addEventListener('click', async () => {
+btnLeadSubmit.disabled = true;
+const errEl = document.getElementById('lead-error');
+const okEl = document.getElementById('lead-success');
+if (errEl) errEl.classList.add('hidden');
+if (okEl) okEl.classList.add('hidden');
+const status = await LeadManager.submit();
+if (status === 'invalid') {
+if (errEl) errEl.classList.remove('hidden');
+} else if (okEl) {
+okEl.textContent = status === 'sent'
+? '✅ Заявка отправлена! Мы свяжемся с вами.'
+: '✅ Заявка сохранена! Отправим автоматически при появлении сети.';
+okEl.classList.remove('hidden');
+}
+btnLeadSubmit.disabled = false;
 });
 }
 if (btnCloseTraining) {

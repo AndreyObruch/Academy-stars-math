@@ -1,6 +1,6 @@
 /* ============================================
-АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.5
-Заставка: насыщенное золотое пламя + яркий синий
+АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.6
+P1: тренажёр ошибок — стиль кнопки .btn-mistakes
 ============================================ */
 :root {
 --bg-primary: #090a0f;
@@ -175,7 +175,6 @@ font-size: clamp(2rem, 7.5vw, 4rem);
 letter-spacing: 4px;
 font-family: 'Lobster', cursive;
 }
-/* ПРАВКА 1: НАСЫЩЕННОЕ золотое пламя для строки 1 */
 .gold-flame-text {
 background: linear-gradient(90deg, #ffc400 0%, #ffe066 25%, #ffb300 50%, #ffe066 75%, #ffc400 100%);
 background-size: 200% auto;
@@ -193,7 +192,6 @@ filter: drop-shadow(0 0 16px rgba(255,196,0,0.95)) drop-shadow(0 0 36px rgba(255
 #splash-line-1.animate-in {
 animation: lineAppearSlow 2.6s ease-out forwards, goldFlow 4s ease-in-out infinite;
 }
-/* ПРАВКА 2: ЯРКО-ЗОЛОТОЙ для строки 2 */
 .rich-gold-text {
 color: #ffcc00;
 text-shadow: 0 0 22px rgba(255,204,0,1), 0 0 50px rgba(255,190,0,0.95), 0 0 80px rgba(255,170,0,0.75);
@@ -206,7 +204,6 @@ animation: goldGlow 3s ease-in-out infinite;
 #splash-line-2.animate-in {
 animation: lineAppearSoft 1.4s ease-out forwards;
 }
-/* ПРАВКА 3: ЯРКО-СИНИЙ для строки 3 */
 .vivid-blue-text {
 color: #0077ff;
 text-shadow: 0 0 20px rgba(0,119,255,1), 0 0 46px rgba(0,100,255,0.95), 0 0 72px rgba(0,80,255,0.75);
@@ -510,6 +507,13 @@ box-shadow: 0 4px 15px rgba(255,65,108,0.4);
 background: linear-gradient(135deg, #ff9800, #ffc107);
 box-shadow: 0 4px 15px rgba(255,152,0,0.4);
 font-size: 1.2rem;
+padding: 18px;
+}
+/* P1: кнопка тренажёра ошибок */
+.btn-mistakes {
+background: linear-gradient(135deg, #8e2de2, #4a00e0);
+box-shadow: 0 4px 15px rgba(74,0,224,0.4);
+font-size: 1.1rem;
 padding: 18px;
 }
 .btn-rules {
@@ -1492,6 +1496,7 @@ body { padding: 10px; align-items: flex-start; padding-top: 20px; }
 .game-btn { padding: 14px; font-size: 1rem; }
 .btn-play { font-size: 1.1rem; padding: 16px; }
 .btn-training { font-size: 1.05rem; padding: 16px; }
+.btn-mistakes { font-size: 1rem; padding: 16px; }
 .leaderboard-side { width: calc(100% - 20px); left: 50%; right: auto; transform: translateX(-50%); bottom: 70px; padding: 14px; }
 .definitions-side { width: calc(100% - 20px); left: 50%; right: auto; transform: translateX(-50%); bottom: 150px; padding: 14px; }
 .btn-lb-mobile { bottom: 15px; left: 10px; padding: 10px; font-size: 0.9rem; }

@@ -1,7 +1,7 @@
 /**
- * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.6
+ * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.8
  * Серверная генерация задач + синхронизация профилей
- * P1: тренажёр ошибок — очередь проваленных задач + режим «Работа над ошибками»
+ * P7: сбор статистики по темам + экран «Прогресс по темам» в кабинете
  */
 const API_BASE = window.location.origin;
 
@@ -43,7 +43,8 @@ lastCompletedLevel: 0,
 dailyRetries: 3,
 lastRetryResetDate: null,
 dailyStreakBonus: 0,
-bestScores: {}
+bestScores: {},
+stats: {}
 };
 this.saveData(data);
 }
@@ -527,7 +528,7 @@ this.lastQuestions.shift();
 };
 
 // ============================================================================
-// БЛОК 7B: ТРЕНАЖЁР ОШИБОК (MistakeTrainer) — P1
+// БЛОК 7B: ТРЕНАЖЁР ОШИБОК (MistakeTrainer)
 // ============================================================================
 const MistakeTrainer = {
 STORAGE_KEY: 'cosmoQuestMistakes_v1',
@@ -907,10 +908,20 @@ currentLevel: 1,
 startTime: 0,
 isRetry: false,
 isTrainingMode: false,
-// P1: режим «Работа над ошибками»
 isMistakeMode: false,
 mistakeQueue: [],
 mistakeIndex: 0,
+// P7: запись результата ответа в статистику тем профиля
+recordStat(question, isCorrect) {
+if (!UIManager.currentPlayer || !question) return;
+const player = StateManager.getPlayer(UIManager.currentPlayer);
+if (!player.stats) player.stats = {};
+const topic = question.type || 'unknown';
+if (!player.stats[topic]) player.stats[topic] = { correct: 0, wrong: 0 };
+if (isCorrect) player.stats[topic].correct++;
+else player.stats[topic].wrong++;
+StateManager.updatePlayer(UIManager.currentPlayer, { stats: player.stats });
+},
 startGame(levelId = null, isRetry = false) {
 AudioManager.init();
 QuestionHistory.reset();
@@ -954,7 +965,6 @@ UIManager.updateSessionTimer(this.sessionTimeLeft);
 this.startSessionTimer();
 this.loadQuestion();
 },
-// P1: запуск тренажёра ошибок — до 10 задач из очереди
 startMistakeTraining() {
 AudioManager.init();
 const queue = MistakeTrainer.take(10);
@@ -1001,7 +1011,6 @@ const loadingText = attempt === 1
 questionContainer.innerHTML = `<div class="question-text">${loadingText}</div>`;
 }
 await new Promise(resolve => setTimeout(resolve, 300));
-// P1: в режиме ошибок задачи берутся из очереди, а не с сервера
 if (this.isMistakeMode) {
 const queued = this.mistakeQueue[this.mistakeIndex];
 if (!queued) {
@@ -1063,6 +1072,7 @@ const isCorrect = String(selectedValue) === String(this.currentQuestion.correct)
 const isBoss = this.currentLevel === 40;
 if (isCorrect) {
 this.correctCount++;
+this.recordStat(this.currentQuestion, true);
 AudioManager.playCorrect();
 UIManager.showFeedbackIcon(true);
 if (buttonElement && ParticleSystem.canvas) {
@@ -1074,7 +1084,6 @@ isBoss
 );
 }
 UIManager.showAnswerResult(true, selectedValue, this.currentQuestion.correct);
-// P1: верный ответ убирает задачу из очереди ошибок
 if (this.isMistakeMode) {
 MistakeTrainer.remove(MistakeTrainer.getKey(this.currentQuestion));
 this.mistakeIndex++;
@@ -1092,10 +1101,10 @@ setTimeout(() => this.loadQuestion(), 1000);
 }
 } else {
 this.mistakesCount++;
+this.recordStat(this.currentQuestion, false);
 AudioManager.playWrong();
 UIManager.showFeedbackIcon(false);
 UIManager.showAnswerResult(false, selectedValue, this.currentQuestion.correct);
-// P1: ошибка в обычном режиме добавляет задачу в очередь тренажёра
 if (!this.isMistakeMode) {
 MistakeTrainer.add(this.currentQuestion);
 } else {
@@ -1108,9 +1117,9 @@ handleQuestionTimeout() {
 if (this.isAnswering) return;
 this.isAnswering = true;
 this.mistakesCount++;
+this.recordStat(this.currentQuestion, false);
 AudioManager.playWrong();
 UIManager.showAnswerResult(false, null, this.currentQuestion.correct);
-// P1: таймаут в обычном режиме добавляет задачу в очередь тренажёра
 if (!this.isMistakeMode) {
 MistakeTrainer.add(this.currentQuestion);
 } else {
@@ -1125,7 +1134,6 @@ this.endGame(false);
 endGame(success) {
 clearInterval(this.sessionTimerInterval);
 clearInterval(this.questionTimerInterval);
-// P1: итоги тренажёра ошибок — без звёзд и жизней
 if (this.isMistakeMode) {
 const total = this.mistakeQueue.length;
 const correct = this.correctCount;
@@ -1261,6 +1269,49 @@ UIManager.login(UIManager.currentPlayer);
 const UIManager = {
 currentPlayer: null,
 selectedGrade: 1,
+// P7: русские названия тем для экрана прогресса
+TOPIC_NAMES: {
+visual_count: 'Счёт предметов',
+comparison: 'Сравнение чисел',
+composition: 'Состав числа',
+addition: 'Сложение до 10',
+subtraction: 'Вычитание до 10',
+visual_sequence: 'Последовательности',
+place_value: 'Разряды чисел',
+addition_20: 'Сложение до 20',
+subtraction_20: 'Вычитание до 20',
+mixed_20: 'Смешанные до 20',
+difference: 'Разностное сравнение',
+increase_decrease: 'Увеличить / уменьшить',
+unknown: 'Неизвестное число',
+parity: 'Чёт и нечет',
+group_count: 'Счёт группами',
+text_problem_1: 'Задачи простые',
+text_problem_2: 'Задачи составные',
+measurement: 'Измерения (см, дм, кг, л)',
+geometry: 'Геометрия',
+andromeda_mix: 'Смешанный блок 1',
+odd_one_out: 'Что лишнее',
+pattern: 'Закономерности',
+emoji_rebus: 'Эмодзи-ребусы',
+true_false: 'Верно / неверно',
+logic_mix_1: 'Смешанная логика',
+trick_question: 'Задачи с подвохом',
+logic_chain: 'Логические цепочки',
+spatial: 'Пространственное мышление',
+riddle: 'Загадки',
+detective_mix: 'Детективные задачи',
+combinatorics: 'Комбинаторика',
+number_puzzle: 'Числовые головоломки',
+attention: 'Внимание',
+space_riddle: 'Космические загадки',
+circus_mix: 'Цирковой микс',
+logic_smekalka: 'Логика + смекалка',
+number_pattern: 'Числа и закономерности',
+space_attention: 'Пространство + внимание',
+final_warmup: 'Финальная разминка',
+mega_boss: 'МЕГА-экзамен'
+},
 init() {
 ParticleSystem.init();
 DefinitionsManager.init();
@@ -1439,13 +1490,39 @@ item.innerHTML = `<span>${medals[i]} ${p.name}</span><span>⭐ ${p.stars} | Ур
 list.appendChild(item);
 });
 },
-// P1: кнопка тренажёра показывает размер очереди и блокируется при пустой
 updateMistakesButton() {
 const btn = document.getElementById('btn-mistakes');
 if (!btn) return;
 const count = MistakeTrainer.count();
 btn.textContent = `📝 Работа над ошибками (${count})`;
 btn.disabled = (count === 0);
+},
+// P7: рендер прогресса по темам в кабинете
+renderProgress() {
+const list = document.getElementById('progress-list');
+if (!list) return;
+list.innerHTML = '';
+const player = StateManager.getPlayer(this.currentPlayer);
+const stats = player.stats || {};
+const topics = Object.keys(stats);
+if (topics.length === 0) {
+list.innerHTML = '<p style="color: #a8d8ff; margin-top: 10px;">Данных пока нет — реши несколько задач!</p>';
+return;
+}
+topics.sort((a, b) => {
+const totalA = stats[a].correct + stats[a].wrong;
+const totalB = stats[b].correct + stats[b].wrong;
+return totalB - totalA;
+});
+topics.forEach(topic => {
+const s = stats[topic];
+const total = s.correct + s.wrong;
+const percent = total ? Math.round((s.correct / total) * 100) : 0;
+const row = document.createElement('div');
+row.className = 'progress-topic';
+row.innerHTML = `<div class="progress-topic-head"><span>${this.TOPIC_NAMES[topic] || topic}</span><span>${percent}% (${s.correct}/${total})</span></div><div class="progress-bar"><div class="progress-fill" style="width: ${percent}%"></div></div>`;
+list.appendChild(row);
+});
 },
 login(playerName, withPlanetIntro = false) {
 this.currentPlayer = playerName;
@@ -1663,7 +1740,6 @@ setTimeout(() => overlay.remove(), 600);
 overlay.addEventListener('click', closeBadge);
 setTimeout(closeBadge, 4000);
 },
-// P1: экран итогов тренажёра ошибок
 showMistakeResults(correct, total, mistakes) {
 const resultsTitle = document.getElementById('results-title');
 const resultsMedal = document.getElementById('results-medal');
@@ -1870,6 +1946,7 @@ dip.innerHTML = `<div class="diploma-title">ДИПЛОМ 1 КУРСА</div><div 
 const lb = cab.querySelector('.settings-section');
 if (lb) cab.insertBefore(dip, lb);
 }
+this.renderProgress();
 const lbList = document.getElementById('leaderboard-list');
 if (!lbList) return;
 lbList.innerHTML = '';
@@ -1877,7 +1954,7 @@ const leaderboard = MotivationManager.getLeaderboard().slice(0, 5);
 if (leaderboard.length === 0) {
 lbList.innerHTML = '<p style="color: #a8d8ff; margin-top: 10px;">Пока нет рекордов. Сыграй первую игру!</p>';
 } else {
-const medals = ['🥇', '🥈', '', '4️⃣', '5️⃣'];
+const medals = ['🥇', '', '', '4️⃣', '5️⃣'];
 leaderboard.forEach((entry, index) => {
 const div = document.createElement('div');
 div.className = `lb-item ${index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : ''}`;
@@ -1953,7 +2030,6 @@ const modal = document.getElementById('modal-training');
 if (modal) modal.classList.remove('hidden');
 });
 }
-// P1: запуск тренажёра ошибок
 if (btnMistakes) {
 btnMistakes.addEventListener('click', () => {
 AudioManager.init();

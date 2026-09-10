@@ -1,7 +1,7 @@
 /**
- * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.8.2
+ * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.8.3
  * Серверная генерация задач + синхронизация профилей
- * Фикс: visual приходит массивом пустых строк → фильтр + фоллбэк-ряд ⭐
+ * Фикс: results-bonuses показывался через style.display поверх .hidden !important → classList
  */
 const API_BASE = window.location.origin;
 
@@ -1764,7 +1764,9 @@ if (resStars) resStars.textContent = '—';
 if (resTotal) resTotal.textContent = '—';
 if (resBonuses) {
 resBonuses.innerHTML = 'ℹ️ Исправленные ошибки убраны из очереди.<br>Остальные вернутся в следующий раз.';
-resBonuses.style.display = 'block';
+resBonuses.classList.remove('hidden');
+} else if (resBonuses) {
+resBonuses.classList.add('hidden');
 }
 const playAgainBtn = document.getElementById('btn-play-again');
 if (playAgainBtn) {
@@ -1793,12 +1795,13 @@ if (resultsMessage) resultsMessage.textContent = `Потеряна 1 жизнь.
 if (resCorrect) resCorrect.textContent = correct;
 if (resStars) resStars.textContent = success ? `+${starsEarned}` : '0';
 if (resTotal) resTotal.textContent = totalStars;
+// ФИКС v4.8.3: classList вместо style.display (иначе .hidden !important побеждает)
 if (resBonuses) {
 if (bonuses && bonuses.length > 0) {
 resBonuses.innerHTML = 'Бонусы:<br>' + bonuses.join('<br>');
-resBonuses.style.display = 'block';
+resBonuses.classList.remove('hidden');
 } else {
-resBonuses.style.display = 'none';
+resBonuses.classList.add('hidden');
 }
 }
 const playAgainBtn = document.getElementById('btn-play-again');
@@ -1833,7 +1836,7 @@ if (resStars) resStars.textContent = '—';
 if (resTotal) resTotal.textContent = '—';
 if (resBonuses) {
 resBonuses.innerHTML = 'ℹ️ В режиме тренировки звёзды и прогресс не сохраняются.<br>Жизни не тратятся.';
-resBonuses.style.display = 'block';
+resBonuses.classList.remove('hidden');
 }
 const playAgainBtn = document.getElementById('btn-play-again');
 if (playAgainBtn) {

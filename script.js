@@ -1,7 +1,7 @@
 /**
- * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.4
+ * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.5
  * Серверная генерация задач + синхронизация профилей
- * Заставка: золотое пламя + 3 алые вспышки + детский шрифт Comfortaa
+ * Правки 4-6: время +8% по уровням, справочник x2, экзамен 40 задач, анти-повторы
  */
 const API_BASE = window.location.origin;
 
@@ -501,7 +501,8 @@ lastCompletedLevel: p.lastCompletedLevel || 0
 // ============================================================================
 const QuestionHistory = {
 lastQuestions: [],
-MAX_HISTORY: 25,
+// ПРАВКА 6: история расширена до 45 — покрывает экзамен в 40 задач
+MAX_HISTORY: 45,
 reset() {
 this.lastQuestions = [];
 },
@@ -572,16 +573,19 @@ LEVELS: [
 { id: 39, name: 'Финальная разминка', planet: 'Лавария', type: 'final_warmup', block: 9, baseTime: 1915 },
 { id: 40, name: 'КОСМИЧЕСКИЙ ЭКЗАМЕН', planet: 'Корония', type: 'mega_boss', block: 10, baseTime: 2400 }
 ],
+// ПРАВКА 4: общее время уровня — прогрессия 8% от уровня к уровню (было ~5%)
 getAdjustedTime(levelId) {
-return this.LEVELS[levelId - 1].baseTime;
+if (levelId === 40) return 3000;
+return Math.min(2400, Math.round(300 * Math.pow(1.08, levelId - 1)));
 },
 getPlanet(levelId) {
 return this.LEVELS[levelId - 1].planet;
 },
+// ПРАВКА 4: время на задачу — прогрессия 8% (было 5% и 3%)
 getQuestionTime(levelId) {
 if (levelId === 40) return 45;
-if (levelId > 20) return Math.min(60, Math.round(20 * Math.pow(1.03, levelId - 21)));
-return Math.round(15 * Math.pow(1.05, levelId - 1));
+if (levelId > 20) return Math.min(75, Math.round(20 * Math.pow(1.08, levelId - 21)));
+return Math.min(60, Math.round(15 * Math.pow(1.08, levelId - 1)));
 }
 };
 
@@ -824,7 +828,8 @@ BANK: [
 ],
 currentIndex: 0,
 intervalId: null,
-CHANGE_INTERVAL: 8000,
+// ПРАВКА 5: время отражения правила удвоено (было 8000 мс)
+CHANGE_INTERVAL: 16000,
 init() {
 this.startRotation();
 },
@@ -882,7 +887,8 @@ this.baseTime = MathEngine.getAdjustedTime(this.currentLevel);
 this.correctCount = 0;
 this.mistakesCount = 0;
 this.sessionTimeLeft = this.baseTime;
-this.targetCorrect = this.currentLevel === 40 ? 30 : 20;
+// ПРАВКА 6: экзамен — 40 задач (было 30), остальные уровни — 20
+this.targetCorrect = this.currentLevel === 40 ? 40 : 20;
 this.questionTimeMax = MathEngine.getQuestionTime(this.currentLevel);
 this.isAnswering = false;
 this.startTime = Date.now();
@@ -902,7 +908,8 @@ this.baseTime = MathEngine.getAdjustedTime(this.currentLevel);
 this.correctCount = 0;
 this.mistakesCount = 0;
 this.sessionTimeLeft = this.baseTime;
-this.targetCorrect = this.currentLevel === 40 ? 30 : 20;
+// ПРАВКА 6: экзамен — 40 задач (было 30), остальные уровни — 20
+this.targetCorrect = this.currentLevel === 40 ? 40 : 20;
 this.questionTimeMax = MathEngine.getQuestionTime(this.currentLevel);
 this.isAnswering = false;
 this.startTime = Date.now();
@@ -923,7 +930,8 @@ this.handleSessionTimeout();
 }
 }, 100);
 },
-async loadQuestion(attempt = 1) {
+// ПРАВКА 6: параметр regen — повторные запросы при повторе задачи (макс. 2)
+async loadQuestion(attempt = 1, regen = 0) {
 this.isAnswering = false;
 const questionContainer = document.getElementById('question-container');
 if (questionContainer) {
@@ -939,6 +947,11 @@ if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 const data = await response.json();
 if (!data.success || !data.task) throw new Error('Неверный формат ответа сервера');
 this.currentQuestion = data.task;
+// ПРАВКА 6: анти-повторы — задача уже была в этой сессии → запросить другую
+if (QuestionHistory.isDuplicate(this.currentQuestion) && regen < 2) {
+return this.loadQuestion(1, regen + 1);
+}
+QuestionHistory.add(this.currentQuestion);
 this.questionTimeLeft = this.questionTimeMax;
 UIManager.renderQuestion(this.currentQuestion, this.correctCount, this.targetCorrect);
 this.startQuestionTimer();
@@ -946,13 +959,13 @@ this.startQuestionTimer();
 console.warn(`Попытка ${attempt} не удалась:`, error);
 if (attempt < 3) {
 const delay = attempt === 1 ? 500 : (attempt === 2 ? 1500 : 3000);
-setTimeout(() => this.loadQuestion(attempt + 1), delay);
+setTimeout(() => this.loadQuestion(attempt + 1, regen), delay);
 } else {
 if (questionContainer) {
 questionContainer.innerHTML = `<div class="question-text"> Связь с космосом временно прервана!<br>Проверь интернет и попробуй снова.</div><button class="game-btn btn-primary" style="margin-top: 16px;" id="btn-retry-network">Попробовать снова 🔄</button>`;
 document.getElementById('btn-retry-network')?.addEventListener('click', () => {
 AudioManager.playClick();
-this.loadQuestion(1);
+this.loadQuestion(1, regen);
 });
 }
 }
@@ -1155,11 +1168,9 @@ if (!splash || !starsBg || !line1 || !line2 || !line3) {
 this.finishIntro();
 return;
 }
-// ИСПРАВЛЕНО: цветовые классы добавляются ДО начала анимации
 line1.classList.add('gold-flame-text');
 line2.classList.add('rich-gold-text');
 line3.classList.add('vivid-blue-text');
-
 starsBg.classList.add('animate-in');
 setTimeout(() => { starsBg.classList.add('animate-rotate'); line1.classList.add('animate-in'); }, 800);
 setTimeout(() => { line1.classList.remove('animate-in'); line1.classList.add('animate-out'); }, 6500);
@@ -1178,7 +1189,6 @@ this.showLoginScreen();
 }, 14300);
 },
 showLoginScreen() {
-// ИСПРАВЛЕНО: синхронизированные таймауты для 3 алых вспышек + финал
 const text1 = document.getElementById('login-text-1');
 const text2 = document.getElementById('login-text-2');
 const text3 = document.getElementById('login-text-3');
@@ -1190,40 +1200,28 @@ if (t) { t.classList.remove('visible', 'fade-out'); t.style.display = ''; t.styl
 });
 if (content) content.classList.add('hidden');
 this.showScreen('screen-login');
-
-// text1: «Звёзды жаждут узнать твоё имя» (золотой, 4 сек)
 setTimeout(() => { if (text1) text1.classList.add('visible'); }, 600);
 setTimeout(() => { if (text1) text1.classList.add('fade-out'); }, 4400);
-
-// text2 crimson: «Впиши его в скрижали» (2 сек)
 setTimeout(() => {
 if (text1) text1.style.display = 'none';
 if (text2) text2.classList.add('visible');
 }, 5900);
 setTimeout(() => { if (text2) text2.classList.add('fade-out'); }, 7900);
-
-// text3 crimson: «Галактической» (2 сек)
 setTimeout(() => {
 if (text2) text2.style.display = 'none';
 if (text3) text3.classList.add('visible');
 }, 9400);
 setTimeout(() => { if (text3) text3.classList.add('fade-out'); }, 11400);
-
-// text4 crimson: «Истории» (2 сек)
 setTimeout(() => {
 if (text3) text3.style.display = 'none';
 if (text4) text4.classList.add('visible');
 }, 12900);
 setTimeout(() => { if (text4) text4.classList.add('fade-out'); }, 14900);
-
-// text5: «Добро пожаловать на борт!» (3 сек)
 setTimeout(() => {
 if (text4) text4.style.display = 'none';
 if (text5) text5.classList.add('visible');
 }, 16400);
 setTimeout(() => { if (text5) text5.classList.add('fade-out'); }, 19400);
-
-// Показ login-content (КОНЕЧНАЯ ЗАСТАВКА)
 setTimeout(() => {
 if (text5) text5.style.display = 'none';
 if (content) {
@@ -1323,7 +1321,7 @@ if (all.length === 0) {
 list.innerHTML = '<div class="lb-empty">Пока нет пилотов. Стань первым!</div>';
 return;
 }
-const medals = ['🥇', '🥈', '', '4️⃣', '5️⃣'];
+const medals = ['🥇', '', '', '4️', '5️⃣'];
 const topClasses = ['top-1', 'top-2', 'top-3', '', ''];
 all.forEach((p, i) => {
 const item = document.createElement('div');
@@ -1529,7 +1527,7 @@ const container = document.getElementById('question-container');
 if (!container) return;
 const icon = document.createElement('div');
 icon.className = 'feedback-icon';
-icon.textContent = isCorrect ? '✓' : '';
+icon.textContent = isCorrect ? '✓' : '✗';
 icon.style.cssText = `position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: clamp(4rem, 12vw, 6rem); font-weight: 900; color: ${isCorrect ? '#96c93d' : '#ff4b2b'}; text-shadow: 0 0 30px ${isCorrect ? 'rgba(150,201,61,0.8)' : 'rgba(255,75,43,0.8)'}; z-index: 100; pointer-events: none;`;
 container.style.position = 'relative';
 container.appendChild(icon);
@@ -1538,7 +1536,7 @@ setTimeout(() => icon.remove(), 900);
 showBadgeAward(badgeName) {
 const overlay = document.createElement('div');
 overlay.className = 'badge-award-overlay';
-overlay.innerHTML = `<div class="badge-award-card"><div class="badge-award-emoji">🏅</div><div class="badge-award-title">НОВАЯ НАГРАДА!</div><div class="badge-award-name">${badgeName}</div><div class="badge-award-sub">Ты молодец! Так держать! </div></div>`;
+overlay.innerHTML = `<div class="badge-award-card"><div class="badge-award-emoji">🏅</div><div class="badge-award-title">НОВАЯ НАГРАДА!</div><div class="badge-award-name">${badgeName}</div><div class="badge-award-sub">Ты молодец! Так держать! 🌟</div></div>`;
 document.body.appendChild(overlay);
 const closeBadge = () => {
 overlay.classList.add('fade-out');
@@ -1557,11 +1555,11 @@ const resTotal = document.getElementById('res-total');
 const resBonuses = document.getElementById('results-bonuses');
 if (success) {
 if (resultsTitle) resultsTitle.textContent = isBoss ? 'МЕГА ЭКЗАМЕН СДАН!' : 'Отлично!';
-if (resultsMedal) resultsMedal.textContent = isBoss ? '' : '🏆';
+if (resultsMedal) resultsMedal.textContent = isBoss ? '👑' : '🏆';
 if (resultsMessage) resultsMessage.textContent = `Ты уложился в ${timeSpent} секунд!`;
 } else {
 if (resultsTitle) resultsTitle.textContent = 'Время вышло!';
-if (resultsMedal) resultsMedal.textContent = '';
+if (resultsMedal) resultsMedal.textContent = '💔';
 if (resultsMessage) resultsMessage.textContent = `Потеряна 1 жизнь. Осталось: ${lives}`;
 }
 if (resCorrect) resCorrect.textContent = correct;
@@ -1639,7 +1637,8 @@ const isUnlocked = player.unlockedLevels.includes(level.id);
 const isCurrent = player.currentLevel === level.id;
 const isBoss = level.id === 40;
 const canRetry = player.dailyRetries > 0 && isUnlocked && level.id <= (player.lastCompletedLevel || 0);
-const adjustedTime = level.baseTime || MathEngine.getAdjustedTime(level.id);
+// ПРАВКА 4: отображаем новое время (прогрессия 8%), а не старый baseTime
+const adjustedTime = MathEngine.getAdjustedTime(level.id);
 const timeStr = `${Math.floor(adjustedTime / 60)}:${(adjustedTime % 60).toString().padStart(2, '0')}`;
 const item = document.createElement('div');
 item.className = 'level-item';
@@ -1679,6 +1678,7 @@ const list = document.getElementById('training-level-list');
 if (!list) return;
 list.innerHTML = '';
 MathEngine.LEVELS.forEach(level => {
+// ПРАВКА 4: отображаем новое время (прогрессия 8%)
 const adjustedTime = MathEngine.getAdjustedTime(level.id);
 const timeStr = `${Math.floor(adjustedTime / 60)}:${(adjustedTime % 60).toString().padStart(2, '0')}`;
 const btn = document.createElement('div');
@@ -1735,7 +1735,7 @@ const leaderboard = MotivationManager.getLeaderboard().slice(0, 5);
 if (leaderboard.length === 0) {
 lbList.innerHTML = '<p style="color: #a8d8ff; margin-top: 10px;">Пока нет рекордов. Сыграй первую игру!</p>';
 } else {
-const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+const medals = ['🥇', '', '', '4️⃣', '5️⃣'];
 leaderboard.forEach((entry, index) => {
 const div = document.createElement('div');
 div.className = `lb-item ${index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : ''}`;

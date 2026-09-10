@@ -1,7 +1,7 @@
 /**
- * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.8.1
+ * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.8.2
  * Серверная генерация задач + синхронизация профилей
- * Фикс: пустой visual у visual_count/visual_sequence → фоллбэк-ряд ⭐
+ * Фикс: visual приходит массивом пустых строк → фильтр + фоллбэк-ряд ⭐
  */
 const API_BASE = window.location.origin;
 
@@ -1636,11 +1636,14 @@ storyDiv.className = 'question-story';
 storyDiv.textContent = question.story;
 questionContainer.appendChild(storyDiv);
 }
-// ФИКС v4.8.1: пустой visual у счётных типов → фоллбэк-ряд ⭐ по correct
-const rawVisual = question.visual || question.visualEmoji;
-let visualData = rawVisual;
+// ФИКС v4.8.2: сервер шлёт visual массивом пустых строк — фильтруем
+let visualData = question.visual || question.visualEmoji;
+if (Array.isArray(visualData)) {
+visualData = visualData.filter(v => v !== null && v !== undefined && String(v).trim() !== '');
+}
+// Если после фильтра пусто у счётных типов — ряд ⭐ по правильному ответу
 if (
-(!rawVisual || (Array.isArray(rawVisual) && rawVisual.length === 0)) &&
+(!visualData || (Array.isArray(visualData) && visualData.length === 0)) &&
 (question.type === 'visual_count' || question.type === 'visual_sequence')
 ) {
 visualData = '⭐';

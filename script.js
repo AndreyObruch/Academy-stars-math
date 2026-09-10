@@ -1,7 +1,7 @@
 /**
- * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.8
+ * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.8.1
  * Серверная генерация задач + синхронизация профилей
- * P7: сбор статистики по темам + экран «Прогресс по темам» в кабинете
+ * Фикс: пустой visual у visual_count/visual_sequence → фоллбэк-ряд ⭐
  */
 const API_BASE = window.location.origin;
 
@@ -911,7 +911,6 @@ isTrainingMode: false,
 isMistakeMode: false,
 mistakeQueue: [],
 mistakeIndex: 0,
-// P7: запись результата ответа в статистику тем профиля
 recordStat(question, isCorrect) {
 if (!UIManager.currentPlayer || !question) return;
 const player = StateManager.getPlayer(UIManager.currentPlayer);
@@ -1269,7 +1268,6 @@ UIManager.login(UIManager.currentPlayer);
 const UIManager = {
 currentPlayer: null,
 selectedGrade: 1,
-// P7: русские названия тем для экрана прогресса
 TOPIC_NAMES: {
 visual_count: 'Счёт предметов',
 comparison: 'Сравнение чисел',
@@ -1497,7 +1495,6 @@ const count = MistakeTrainer.count();
 btn.textContent = `📝 Работа над ошибками (${count})`;
 btn.disabled = (count === 0);
 },
-// P7: рендер прогресса по темам в кабинете
 renderProgress() {
 const list = document.getElementById('progress-list');
 if (!list) return;
@@ -1639,7 +1636,15 @@ storyDiv.className = 'question-story';
 storyDiv.textContent = question.story;
 questionContainer.appendChild(storyDiv);
 }
-const visualData = question.visual || question.visualEmoji;
+// ФИКС v4.8.1: пустой visual у счётных типов → фоллбэк-ряд ⭐ по correct
+const rawVisual = question.visual || question.visualEmoji;
+let visualData = rawVisual;
+if (
+(!rawVisual || (Array.isArray(rawVisual) && rawVisual.length === 0)) &&
+(question.type === 'visual_count' || question.type === 'visual_sequence')
+) {
+visualData = '⭐';
+}
 if (visualData) {
 const visualDiv = document.createElement('div');
 visualDiv.className = 'question-visual';

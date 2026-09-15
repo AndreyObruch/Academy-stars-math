@@ -1,3 +1,5 @@
+// v4.12-pool: расширены пулы примеров (уровни 18–20 и повторы), параметрические генераторы,
+// фикс пустых эмодзи в visual (были '' в массивах эмодзи)
 const LEVELS = [
   { id: 1, name: 'Первый контакт', planet: 'Аэрис', type: 'visual_count', block: 1, baseTime: 300 },
   { id: 2, name: 'Гравитационное поле', planet: 'Люмен', type: 'comparison', block: 1, baseTime: 315 },
@@ -52,6 +54,8 @@ const shuffle = (array) => {
   return arr;
 };
 
+const pick = (array) => array[randInt(0, array.length - 1)];
+
 const numOptions = (correct, min, max) => {
   const options = new Set([correct]);
   const range = Math.min(5, Math.max(2, max - min));
@@ -86,7 +90,7 @@ const getEmojiName = (emoji) => {
 const generators = {
   visual_count: () => {
     const emojis = ['🪐', '💎', '🚀', '⭐', '👽'];
-    const emoji = emojis[randInt(0, emojis.length - 1)];
+    const emoji = pick(emojis);
     const count = randInt(3, 8);
     return {
       type: 'visual_count',
@@ -134,8 +138,8 @@ const generators = {
     };
   },
   visual_sequence: () => {
-    const emojis = ['', '💎', '🚀', '⭐', '👽'];
-    const emoji = emojis[randInt(0, emojis.length - 1)];
+    const emojis = ['🪐', '💎', '🚀', '⭐', '👽'];
+    const emoji = pick(emojis);
     const count = randInt(10, 18);
     return {
       type: 'visual_sequence',
@@ -235,12 +239,16 @@ const generators = {
   },
   text_problem_1: () => {
     const problems = [
-      (a, b) => ({ story: `На станции было ${a} . Прилетело ещё ${b} . Сколько стало?`, answer: a + b }),
-      (a, b) => ({ story: `В пещере нашли ${a} 💎. Потеряли ${b} 💎. Сколько осталось ?`, answer: a - b }),
-      (a, b) => ({ story: `У инопланетян было ${a} 👽. Прибыло ещё ${b} 👽. Сколько всего ?`, answer: a + b }),
-      (a, b) => ({ story: `На орбите ${a} 🪐. Прилетело ещё ${b} 🪐. Сколько всего 🪐?`, answer: a + b })
+      (a, b) => ({ story: `На станции было ${a} 🚀. Прилетело ещё ${b} 🚀. Сколько стало?`, answer: a + b }),
+      (a, b) => ({ story: `В пещере нашли ${a} 💎. Потеряли ${b} 💎. Сколько осталось?`, answer: a - b }),
+      (a, b) => ({ story: `У инопланетян было ${a} 👽. Прибыло ещё ${b} 👽. Сколько всего?`, answer: a + b }),
+      (a, b) => ({ story: `На орбите ${a} 🪐. Прилетело ещё ${b} 🪐. Сколько всего?`, answer: a + b }),
+      (a, b) => ({ story: `В трюме было ${a} ⭐. Погрузили ещё ${b} ⭐. Сколько стало?`, answer: a + b }),
+      (a, b) => ({ story: `Экипаж съел ${a} 🍎 из ${a + b}. Сколько осталось?`, answer: b }),
+      (a, b) => ({ story: `У Ани ${a} 🎈, у Бори ${b} 🎈. Сколько всего?`, answer: a + b }),
+      (a, b) => ({ story: `Робот сделал ${a} шага и ещё ${b}. Сколько всего шагов?`, answer: a + b })
     ];
-    const gen = problems[randInt(0, problems.length - 1)];
+    const gen = pick(problems);
     const a = randInt(3, 8), b = randInt(1, 5);
     const { story, answer } = gen(a, b);
     return {
@@ -253,66 +261,92 @@ const generators = {
   },
   text_problem_2: () => {
     const a = randInt(4, 8), b = randInt(1, Math.min(3, a - 1));
-    const emojis = ['', '💎', '🚀'];
-    const emoji = emojis[randInt(0, emojis.length - 1)];
+    const emojis = ['🚀', '💎', '🪐'];
+    const emoji = pick(emojis);
+    const isLess = Math.random() < 0.5;
+    const blue = isLess ? a - b : a + b;
     return {
       type: 'text_problem_2',
-      story: `На орбите ${a} ${emoji} красных, а синих на ${b} меньше. Сколько всего ${emoji}?`,
+      story: `На орбите ${a} ${emoji} красных, а синих на ${b} ${isLess ? 'меньше' : 'больше'}. Сколько всего ${emoji}?`,
       question: 'Реши задачу',
-      options: numOptions(a + (a - b), 3, 20),
-      correct: a + (a - b)
+      options: numOptions(a + blue, 3, 25),
+      correct: a + blue
     };
   },
   measurement: () => {
-    const problems = [
-      { q: '1 дм 5 см = ... см', correct: 15 },
-      { q: '2 дм = ... см', correct: 20 },
-      { q: '1 дм 3 см = ... см', correct: 13 },
-      { q: '1 дм 7 см = ... см', correct: 17 },
-      { q: '3 дм = ... см', correct: 30 },
-      { q: '1 л + 4 л = ... л', correct: 5 },
-      { q: '7 кг − 3 кг = ... кг', correct: 4 },
-      { q: '2 л + 6 л = ... л', correct: 8 },
-      { q: '1 дм 9 см = ... см', correct: 19 }
-    ];
-    const p = problems[randInt(0, problems.length - 1)];
+    const kind = randInt(0, 4);
+    let q, correct;
+    if (kind === 0) {
+      const d = randInt(1, 5), c = randInt(1, 9);
+      q = `${d} дм ${c} см = ... см`; correct = d * 10 + c;
+    } else if (kind === 1) {
+      const d = randInt(2, 9);
+      q = `${d} дм = ... см`; correct = d * 10;
+    } else if (kind === 2) {
+      const a = randInt(1, 8), b = randInt(1, 9 - a);
+      q = `${a} л + ${b} л = ... л`; correct = a + b;
+    } else if (kind === 3) {
+      const a = randInt(4, 10), b = randInt(1, a - 1);
+      q = `${a} кг − ${b} кг = ... кг`; correct = a - b;
+    } else {
+      const a = randInt(3, 9), b = randInt(1, a - 1);
+      q = `${a} л − ${b} л = ... л`; correct = a - b;
+    }
     return {
       type: 'measurement',
-      question: p.q,
-      options: numOptions(p.correct, 1, 40),
-      correct: p.correct
+      question: q,
+      options: numOptions(correct, 1, 60),
+      correct: correct
     };
   },
   geometry: () => {
-    const shapes = [
-      { emoji: '🔺', q: 'Сколько углов у треугольника?', correct: 3 },
-      { emoji: '🟥', q: 'Сколько углов у квадрата?', correct: 4 },
-      { emoji: '⬜', q: 'Сколько сторон у прямоугольника?', correct: 4 },
-      { emoji: '', q: 'Сколько углов у круга?', correct: 0 },
-      { emoji: '🔶', q: 'Сколько углов у ромба?', correct: 4 }
+    if (Math.random() < 0.2) {
+      const shape = Math.random() < 0.5 ? { name: 'круга', emoji: '⭕' } : { name: 'овала', emoji: '⚪' };
+      return {
+        type: 'geometry',
+        question: `Сколько углов у ${shape.name}?`,
+        visual: [shape.emoji],
+        options: numOptions(0, 0, 6),
+        correct: 0
+      };
+    }
+    const polys = [
+      { name: 'треугольника', n: 3, emoji: '🔺' },
+      { name: 'квадрата', n: 4, emoji: '🟥' },
+      { name: 'прямоугольника', n: 4, emoji: '⬜' },
+      { name: 'ромба', n: 4, emoji: '🔶' },
+      { name: 'пятиугольника', n: 5, emoji: '🟠' },
+      { name: 'шестиугольника', n: 6, emoji: '🟡' }
     ];
-    const s = shapes[randInt(0, shapes.length - 1)];
+    const props = ['углов', 'сторон', 'вершин'];
+    const p = pick(polys);
+    const prop = pick(props);
     return {
       type: 'geometry',
-      question: s.q,
-      visual: [s.emoji],
-      options: numOptions(s.correct, 0, 6),
-      correct: s.correct
+      question: `Сколько ${prop} у ${p.name}?`,
+      visual: [p.emoji],
+      options: numOptions(p.n, 0, 7),
+      correct: p.n
     };
   },
   andromeda_mix: () => {
     const types = ['text_problem_1', 'text_problem_2', 'measurement', 'geometry'];
-    return generators[types[randInt(0, types.length - 1)]]();
+    return generators[pick(types)]();
   },
   odd_one_out: () => {
     const categories = [
-      { items: ['🍎', '🍊', '🍇'], odd: '🚀' },
-      { items: ['🐶', '🐱', '🐭'], odd: '🚀' },
-      { items: ['🔺', '🟥', ''], odd: '⚪' },
+      { items: ['🍎', '', '🍇'], odd: '🚀' },
+      { items: ['🐶', '', ''], odd: '' },
+      { items: ['🔺', '🟥', ''], odd: '⭕' },
       { items: ['🌞', '☄️', '🌟'], odd: '🍕' },
-      { items: ['🎸', '🎹', '🎻'], odd: '🚀' }
+      { items: ['🎸', '🎹', ''], odd: '🚀' },
+      { items: ['🥕', '', ''], odd: '🍰' },
+      { items: ['⚽', '', ''], odd: '📘' },
+      { items: ['🚗', '', '🚲'], odd: '🌳' },
+      { items: ['🐟', '🐬', ''], odd: '🦅' },
+      { items: ['❄️', '🌧️', '🌈'], odd: '🍎' }
     ];
-    const cat = categories[randInt(0, categories.length - 1)];
+    const cat = pick(categories);
     const visual = shuffle([...cat.items, cat.odd]);
     return {
       type: 'odd_one_out',
@@ -323,47 +357,65 @@ const generators = {
     };
   },
   pattern: () => {
-    const patterns = [
-      { seq: [2, 4, 6, 8], next: 10 },
-      { seq: [10, 8, 6, 4], next: 2 },
-      { seq: [5, 10, 15, 20], next: 25 },
-      { seq: [1, 3, 5, 7], next: 9 },
-      { seq: [3, 6, 9, 12], next: 15 }
-    ];
-    const p = patterns[randInt(0, patterns.length - 1)];
+    const desc = Math.random() < 0.4;
+    const step = [2, 3, 4, 5][randInt(0, 3)];
+    let seq, next;
+    if (!desc) {
+      const start = randInt(1, 9);
+      seq = [0, 1, 2, 3].map(i => start + i * step);
+      next = start + 4 * step;
+    } else {
+      const start = randInt(25, 45);
+      next = start - 4 * step;
+      if (next < 0) return generators.pattern();
+      seq = [0, 1, 2, 3].map(i => start - i * step);
+    }
     return {
       type: 'pattern',
-      question: `Продолжи ряд: ${p.seq.join(', ')}, ...`,
-      options: numOptions(p.next, 1, 30),
-      correct: p.next
+      question: `Продолжи ряд: ${seq.join(', ')}, ...`,
+      options: numOptions(next, 0, 60),
+      correct: next
     };
   },
   emoji_rebus: () => {
-    const a = randInt(2, 5);
-    const sum = a * 2;
-    const emojis = ['', '🪐', '⭐', '👽'];
-    const emoji = emojis[randInt(0, emojis.length - 1)];
+    const k = Math.random() < 0.7 ? 2 : 3;
+    const a = randInt(2, 6);
+    const sum = a * k;
+    const emojis = ['🚀', '', '⭐', '', '💎'];
+    const emoji = pick(emojis);
+    const left = Array(k).fill(emoji).join(' + ');
     return {
       type: 'emoji_rebus',
-      question: `${emoji} + ${emoji} = ${sum}. Чему равен ${emoji}?`,
+      question: `${left} = ${sum}. Чему равен ${emoji}?`,
       options: numOptions(a, 1, 9),
       correct: a
     };
   },
   true_false: () => {
-    const statements = [
-      { q: 'Правда ли, что у квадрата 4 угла?', a: 'Да' },
-      { q: 'Правда ли, что 5 + 5 = 11?', a: 'Нет' },
-      { q: 'Правда ли, что в неделе 7 дней?', a: 'Да' },
-      { q: 'Правда ли, что 1 дм = 10 см?', a: 'Да' },
-      { q: 'Правда ли, что у треугольника 4 угла?', a: 'Нет' }
-    ];
-    const s = statements[randInt(0, statements.length - 1)];
+    if (Math.random() < 0.5) {
+      const facts = [
+        { q: 'Правда ли, что у квадрата 4 угла?', a: 'Да' },
+        { q: 'Правда ли, что у треугольника 4 угла?', a: 'Нет' },
+        { q: 'Правда ли, что в неделе 7 дней?', a: 'Да' },
+        { q: 'Правда ли, что 1 дм = 10 см?', a: 'Да' },
+        { q: 'Правда ли, что у круга нет углов?', a: 'Да' },
+        { q: 'Правда ли, что 10 − 3 = 6?', a: 'Нет' },
+        { q: 'Правда ли, что у прямоугольника 4 стороны?', a: 'Да' },
+        { q: 'Правда ли, что 8 + 2 = 12?', a: 'Нет' },
+        { q: 'Правда ли, что у пятиугольника 5 углов?', a: 'Да' },
+        { q: 'Правда ли, что 1 м = 10 см?', a: 'Нет' }
+      ];
+      const s = pick(facts);
+      return { type: 'true_false', question: s.q, options: ['Да', 'Нет'], correct: s.a };
+    }
+    const a = randInt(2, 9), b = randInt(1, 9);
+    const isTrue = Math.random() < 0.5;
+    const c = isTrue ? a + b : a + b + 1;
     return {
       type: 'true_false',
-      question: s.q,
+      question: `Правда ли, что ${a} + ${b} = ${c}?`,
       options: ['Да', 'Нет'],
-      correct: s.a
+      correct: isTrue ? 'Да' : 'Нет'
     };
   },
   logic_mix_1: () => Math.random() < 0.5 ? generators.odd_one_out() : generators.pattern(),
@@ -372,9 +424,13 @@ const generators = {
       { q: 'На дереве сидело 5 птиц. Охотник выстрелил и убил одну. Сколько птиц осталось?', a: 0, opts: [0, 1, 4, 5] },
       { q: 'Что тяжелее: 1 кг пуха или 1 кг железа?', a: 'Одинаково', opts: ['Пух', 'Железо', 'Одинаково', 'Не знаю'] },
       { q: 'У стола 4 угла. Один отпилили. Сколько углов осталось?', a: 5, opts: [3, 4, 5, 6] },
-      { q: 'В семье 5 сыновей. У каждого есть сестра. Сколько всего детей?', a: 6, opts: [5, 6, 10, 11] }
+      { q: 'В семье 5 сыновей. У каждого есть сестра. Сколько всего детей?', a: 6, opts: [5, 6, 10, 11] },
+      { q: 'Горело 7 свечей. 2 погасили. Сколько свечей осталось?', a: 7, opts: [2, 5, 7, 9] },
+      { q: 'Пара лошадей пробежала 10 км. Сколько км пробежала каждая?', a: 10, opts: [5, 10, 20, 40] },
+      { q: 'Сколько концов у 3 палок?', a: 6, opts: [3, 6, 9, 12] },
+      { q: 'Курица весит 2 кг на одной ноге. Сколько она весит на двух?', a: 2, opts: [1, 2, 4, 8] }
     ];
-    const r = riddles[randInt(0, riddles.length - 1)];
+    const r = pick(riddles);
     return {
       type: 'trick_question',
       question: r.q,
@@ -383,26 +439,42 @@ const generators = {
     };
   },
   logic_chain: () => {
-    const chains = [
-      { q: 'Слон тяжелее жирафа, жираф тяжелее зебры. Кто легче всех?', a: 'Зебра', opts: ['Слон', 'Жираф', 'Зебра', 'Одинаково'] },
-      { q: 'Маша выше Пети, Петя выше Коли. Кто самый низкий?', a: 'Коля', opts: ['Маша', 'Петя', 'Коля', 'Одинаково'] },
-      { q: 'Книга дороже тетради, тетрадь дороже ручки. Что дешевле всего?', a: 'Ручка', opts: ['Книга', 'Тетрадь', 'Ручка', 'Одинаково'] }
-    ];
-    const c = chains[randInt(0, chains.length - 1)];
+    const kind = randInt(0, 2);
+    if (kind === 0) {
+      const animals = shuffle(['Слон', 'Жираф', 'Зебра', 'Медведь', 'Волк']).slice(0, 3);
+      return {
+        type: 'logic_chain',
+        question: `${animals[0]} тяжелее ${animals[1].toLowerCase()}, ${animals[1]} тяжелее ${animals[2].toLowerCase()}. Кто легче всех?`,
+        options: [...animals, 'Одинаково'],
+        correct: animals[2]
+      };
+    } else if (kind === 1) {
+      const names = shuffle(['Маша', 'Петя', 'Коля', 'Оля', 'Витя', 'Соня']).slice(0, 3);
+      return {
+        type: 'logic_chain',
+        question: `${names[0]} выше ${names[1]}, ${names[1]} выше ${names[2]}. Кто самый низкий?`,
+        options: [...names, 'Одинаково'],
+        correct: names[2]
+      };
+    }
+    const things = shuffle(['Книга', 'Тетрадь', 'Ручка', 'Рюкзак', 'Пенал']).slice(0, 3);
     return {
       type: 'logic_chain',
-      question: c.q,
-      options: c.opts,
-      correct: c.a
+      question: `${things[0]} дороже ${things[1].toLowerCase()}, ${things[1]} дороже ${things[2].toLowerCase()}. Что дешевле всего?`,
+      options: [...things, 'Одинаково'],
+      correct: things[2]
     };
   },
   spatial: () => {
     const puzzles = [
       { q: 'Справа от кота сидит собака. Слева от кота — мышь. Кто сидит между ними?', a: 'Кот', opts: ['Собака', 'Мышь', 'Кот', 'Никто'] },
       { q: 'На полке 3 книги: красная слева от синей, синяя слева от зелёной. Какая книга крайняя справа?', a: 'Зелёная', opts: ['Красная', 'Синяя', 'Зелёная', 'Неизвестно'] },
-      { q: 'Круг, квадрат и треугольник лежат в ряд. Треугольник не первый, круг не последний. Кто первый?', a: 'Квадрат', opts: ['Круг', 'Квадрат', 'Треугольник', 'Неизвестно'] }
+      { q: 'Красный, синий и жёлтый шары в ряд. Синий не первый, жёлтый не второй, красный не последний. Кто первый?', a: 'Красный', opts: ['Красный', 'Синий', 'Жёлтый', 'Неизвестно'] },
+      { q: 'Справа от мамы стоит сын, слева — дочь. Кто стоит между ними?', a: 'Мама', opts: ['Сын', 'Дочь', 'Мама', 'Никто'] },
+      { q: 'На полке 3 игрушки: мишка левее зайца, зайчик левее мяча. Какая игрушка крайняя слева?', a: 'Мишка', opts: ['Мишка', 'Зайчик', 'Мяч', 'Неизвестно'] },
+      { q: 'Груша, яблоко и слива в ряду. Яблоко не с краю, слива не первая. Что первое?', a: 'Груша', opts: ['Груша', 'Яблоко', 'Слива', 'Неизвестно'] }
     ];
-    const p = puzzles[randInt(0, puzzles.length - 1)];
+    const p = pick(puzzles);
     return {
       type: 'spatial',
       question: p.q,
@@ -414,9 +486,13 @@ const generators = {
     const riddles = [
       { q: 'Что можно увидеть с закрытыми глазами?', a: 'Сон', opts: ['Свет', 'Сон', 'Темноту', 'Ничего'] },
       { q: 'Что становится больше, если его поставить вверх ногами?', a: '6', opts: ['9', '6', '8', '0'] },
-      { q: 'Когда чёрной кошке легче всего пробраться в дом?', a: 'Когда дверь открыта', opts: ['Ночью', 'Днём', 'Когда дверь открыта', 'Когда все спят'] }
+      { q: 'Когда чёрной кошке легче всего пробраться в дом?', a: 'Когда дверь открыта', opts: ['Ночью', 'Днём', 'Когда дверь открыта', 'Когда все спят'] },
+      { q: 'Что идёт, не двигаясь с места?', a: 'Время', opts: ['Вода', 'Время', 'Дорога', 'Часы'] },
+      { q: 'Сколько месяцев в году имеют 28 дней?', a: '12', opts: ['1', '6', '12', '0'] },
+      { q: 'Чем больше из неё берёшь, тем больше она становится. Что это?', a: 'Яма', opts: ['Яма', 'Мешок', 'Река', 'Гора'] },
+      { q: 'Что принадлежит тебе, но пользуются чаще другие?', a: 'Имя', opts: ['Имя', 'Портфель', 'Стул', 'Кот'] }
     ];
-    const r = riddles[randInt(0, riddles.length - 1)];
+    const r = pick(riddles);
     return {
       type: 'riddle',
       question: r.q,
@@ -426,20 +502,29 @@ const generators = {
   },
   detective_mix: () => {
     const types = ['trick_question', 'logic_chain', 'spatial', 'riddle'];
-    return generators[types[randInt(0, types.length - 1)]]();
+    return generators[pick(types)]();
   },
   combinatorics: () => {
-    const problems = [
-      { q: 'У Маши 2 платья и 3 юбки. Сколько разных нарядов?', a: 6, opts: [5, 6, 7, 8] },
-      { q: 'На тарелке 3 яблока и 2 груши. Сколькими способами можно выбрать 1 фрукт?', a: 5, opts: [3, 4, 5, 6] },
-      { q: 'У пирата 2 шляпы и 2 сабли. Сколько комбинаций?', a: 4, opts: [2, 3, 4, 5] }
-    ];
-    const p = problems[randInt(0, problems.length - 1)];
+    const kind = randInt(0, 3);
+    let q, correct;
+    if (kind === 0) {
+      const p = randInt(2, 4), s = randInt(2, 4);
+      q = `У Маши ${p} платья и ${s} юбки. Сколько разных нарядов?`; correct = p * s;
+    } else if (kind === 1) {
+      const a = randInt(2, 5), g = randInt(2, 5);
+      q = `На тарелке ${a} яблока и ${g} груши. Сколькими способами выбрать 1 фрукт?`; correct = a + g;
+    } else if (kind === 2) {
+      const h = randInt(2, 4), s = randInt(2, 4);
+      q = `У пирата ${h} шляпы и ${s} сабли. Сколько комбинаций?`; correct = h * s;
+    } else {
+      const m = randInt(2, 3), n = randInt(2, 3);
+      q = `Из A в B ${m} пути, из B в C ${n} пути. Сколькими путями пройти A→C?`; correct = m * n;
+    }
     return {
       type: 'combinatorics',
-      question: p.q,
-      options: p.opts,
-      correct: p.a
+      question: q,
+      options: numOptions(correct, 2, 20),
+      correct: correct
     };
   },
   number_puzzle: () => {
@@ -453,43 +538,79 @@ const generators = {
     };
   },
   attention: () => {
-    const problems = [
-      { q: 'Сколько лап у 2 собак и 1 кошки?', a: 12, opts: [8, 10, 12, 14] },
-      { q: 'В комнате 4 угла, в каждом углу по кошке, напротив каждой кошки по 3 кошки. Сколько кошек?', a: 4, opts: [4, 8, 12, 16] },
-      { q: 'Шёл человек в город, навстречу 3 знакомых. Сколько человек шло в город?', a: 1, opts: [1, 3, 4, 5] }
-    ];
-    const p = problems[randInt(0, problems.length - 1)];
+    const kind = randInt(0, 5);
+    let q, correct;
+    if (kind === 0) {
+      const d = randInt(1, 3), c = randInt(1, 3);
+      q = `Сколько лап у ${d} собак и ${c} кошек?`; correct = 4 * (d + c);
+    } else if (kind === 1) {
+      q = 'В комнате 4 угла, в каждом по кошке, напротив каждой кошки по 3 кошки. Сколько кошек?'; correct = 4;
+    } else if (kind === 2) {
+      const n = randInt(2, 5);
+      q = `Шёл человек в город, навстречу ${n} знакомых. Сколько человек шло в город?`; correct = 1;
+    } else if (kind === 3) {
+      const s = randInt(2, 4);
+      q = `Сколько ножек у ${s} стульев?`; correct = 4 * s;
+    } else if (kind === 4) {
+      const v = randInt(2, 4);
+      q = `Сколько колёс у ${v} двухколёсных велосипедов?`; correct = 2 * v;
+    } else {
+      const h = randInt(1, 2);
+      q = `Сколько пальцев на ${h} руках?`; correct = 5 * h;
+    }
     return {
       type: 'attention',
-      question: p.q,
-      options: p.opts,
-      correct: p.a
+      question: q,
+      options: numOptions(correct, 1, 20),
+      correct: correct
     };
   },
   space_riddle: () => {
-    const riddles = [
-      { q: 'Ракета летит к Марсу 7 месяцев. Обратно она летит столько же. Сколько месяцев длится полёт?', a: 14, opts: [7, 14, 21, 28] },
-      { q: 'У робота 4 кнопки: красная, синяя, зелёная, жёлтая. Он нажимает их по кругу. Какую он нажмёт 5-й раз?', a: 'Красную', opts: ['Красную', 'Синюю', 'Зелёную', 'Жёлтую'] },
-      { q: 'Кратер имеет форму круга. Сколько у него углов?', a: 0, opts: [0, 1, 3, 4] }
-    ];
-    const r = riddles[randInt(0, riddles.length - 1)];
+    const kind = randInt(0, 3);
+    if (kind === 0) {
+      const m = randInt(3, 9);
+      return {
+        type: 'space_riddle',
+        question: `Ракета летит к Марсу ${m} месяцев. Обратно столько же. Сколько месяцев длится полёт?`,
+        options: numOptions(m * 2, 4, 20),
+        correct: m * 2
+      };
+    } else if (kind === 1) {
+      const buttons = ['красную', 'синюю', 'зелёную', 'жёлтую'];
+      const k = randInt(5, 9);
+      const ans = buttons[(k - 1) % 4];
+      return {
+        type: 'space_riddle',
+        question: `У робота 4 кнопки: красная, синяя, зелёная, жёлтая. Он нажимает их по кругу. Какую нажмёт ${k}-й раз?`,
+        options: buttons,
+        correct: ans
+      };
+    } else if (kind === 2) {
+      return {
+        type: 'space_riddle',
+        question: 'Кратер имеет форму круга. Сколько у него углов?',
+        options: numOptions(0, 0, 5),
+        correct: 0
+      };
+    }
+    const s = randInt(3, 7), d = randInt(1, 2);
     return {
       type: 'space_riddle',
-      question: r.q,
-      options: r.opts,
-      correct: r.a
+      question: `У планеты A ${s} спутника, у планеты B на ${d} меньше. Сколько всего спутников?`,
+      options: numOptions(s + (s - d), 2, 15),
+      correct: s + (s - d)
     };
   },
   circus_mix: () => {
     const types = ['combinatorics', 'number_puzzle', 'attention', 'space_riddle'];
-    return generators[types[randInt(0, types.length - 1)]]();
+    return generators[pick(types)]();
   },
   logic_smekalka: () => Math.random() < 0.5 ? generators.trick_question() : generators.riddle(),
   number_pattern: () => Math.random() < 0.5 ? generators.pattern() : generators.number_puzzle(),
   space_attention: () => Math.random() < 0.5 ? generators.space_riddle() : generators.attention(),
   final_warmup: () => {
     const types = ['odd_one_out', 'pattern', 'emoji_rebus', 'true_false', 'trick_question', 'logic_chain', 'spatial', 'riddle', 'combinatorics', 'number_puzzle', 'attention', 'space_riddle'];
-    return generators[types[randInt(0, types.length - 1)]]();
+    return generators[pick(types)]();
   },
   mega_boss: () => {
     const allTypes = [
@@ -501,7 +622,7 @@ const generators = {
       'trick_question', 'logic_chain', 'spatial', 'riddle',
       'combinatorics', 'number_puzzle', 'attention', 'space_riddle'
     ];
-    const q = generators[allTypes[randInt(0, allTypes.length - 1)]]();
+    const q = generators[pick(allTypes)]();
     q.isBoss = true;
     return q;
   }
@@ -511,7 +632,7 @@ const generate = (levelId, type) => {
   const level = LEVELS[levelId - 1];
   const taskType = type || (level ? level.type : 'visual_count');
   const max = level ? level.max : undefined;
-  
+
   if (generators[taskType]) {
     return generators[taskType](max);
   }

@@ -1,6 +1,6 @@
 /**
- * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.10-lead
- * Фаза 10: LeadManager — лид-форма с офлайн-очередью и отправкой на /api/leads
+ * АКАДЕМИЯ ЗВЁЗДНЫХ МАТЕМАТИКОВ v4.11-time
+ * Ребаланс времени: пример 30 сек ×1.05/уровень (cap 60), уровень = пример×20, экзамен = 60×40 = 2400
  */
 const API_BASE = window.location.origin;
 
@@ -602,7 +602,6 @@ body: JSON.stringify(lead)
 if (!response.ok) throw new Error('HTTP ' + response.status);
 return response.json();
 },
-// Верняет: 'invalid' | 'sent' | 'queued'
 async submit() {
 const lead = this.collect();
 if (!this.validate(lead)) return 'invalid';
@@ -619,7 +618,6 @@ this.clearForm();
 return 'queued';
 }
 },
-// Дозаправка очереди при появлении сети
 async flushQueue() {
 const queue = this.load();
 if (queue.length === 0) return;
@@ -646,62 +644,63 @@ if (consent) consent.checked = false;
 };
 
 // ============================================================================
-// БЛОК 8: ДВИЖОК МАТЕМАТИКИ (MathEngine) — ЛОКАЛЬНЫЙ ФОЛЛБЭК
+// БЛОК 8: ДВИЖОК МАТЕМАТИКИ (MathEngine) — ЛОКАЛЬНЫЙ ФОЛЛБЭК + ВРЕМЯ v4.11
 // ============================================================================
 const MathEngine = {
 LEVELS: [
-{ id: 1, name: 'Первый контакт', planet: 'Аэрис', type: 'visual_count', block: 1, baseTime: 300 },
-{ id: 2, name: 'Гравитационное поле', planet: 'Люмен', type: 'comparison', block: 1, baseTime: 315 },
-{ id: 3, name: 'Двойные звёзды', planet: 'Дуо', type: 'composition', block: 1, baseTime: 331 },
-{ id: 4, name: 'Слияние галактик', planet: 'Суммия', type: 'addition', block: 1, baseTime: 347, max: 10 },
-{ id: 5, name: 'Чёрная дыра', planet: 'Умбра', type: 'subtraction', block: 1, baseTime: 365, max: 10 },
-{ id: 6, name: 'Парад планет', planet: 'Процессия', type: 'visual_sequence', block: 2, baseTime: 383 },
-{ id: 7, name: 'Двойная система', planet: 'Бинита', type: 'place_value', block: 2, baseTime: 402 },
-{ id: 8, name: 'Световой скачок', planet: 'Люцида', type: 'addition_20', block: 2, baseTime: 422 },
-{ id: 9, name: 'Обратный отсчёт', planet: 'Ретрогра', type: 'subtraction_20', block: 2, baseTime: 443 },
-{ id: 10, name: 'Перекрёсток комет', planet: 'Комета', type: 'mixed_20', block: 2, baseTime: 465 },
-{ id: 11, name: 'Весы Вселенной', planet: 'Либра', type: 'difference', block: 3, baseTime: 488 },
-{ id: 12, name: 'Ускорение / Торможение', planet: 'Велоция', type: 'increase_decrease', block: 3, baseTime: 512 },
-{ id: 13, name: 'Скрытая планета', planet: 'Целита', type: 'unknown', block: 3, baseTime: 538 },
-{ id: 14, name: 'Симметрия мироздания', planet: 'Симметрия', type: 'parity', block: 3, baseTime: 565 },
-{ id: 15, name: 'Ритм пульсара', planet: 'Пульсара', type: 'group_count', block: 3, baseTime: 593 },
-{ id: 16, name: 'Грузовой корабль', planet: 'Каргона', type: 'text_problem_1', block: 4, baseTime: 623 },
-{ id: 17, name: 'Двойная экспедиция', planet: 'Эксперия', type: 'text_problem_2', block: 4, baseTime: 654 },
-{ id: 18, name: 'Станция «Метрология»', planet: 'Метрия', type: 'measurement', block: 4, baseTime: 687 },
-{ id: 19, name: 'Карта созвездий', planet: 'Стелларис', type: 'geometry', block: 4, baseTime: 721 },
-{ id: 20, name: 'Врата Андромеды', planet: 'Андария', type: 'andromeda_mix', block: 4, baseTime: 757 },
-{ id: 21, name: 'Что лишнее?', planet: 'Кристаллия', type: 'odd_one_out', block: 6, baseTime: 795 },
-{ id: 22, name: 'Закономерности', planet: 'Секвенция', type: 'pattern', block: 6, baseTime: 835 },
-{ id: 23, name: 'Эмодзи-ребусы', planet: 'Ребусия', type: 'emoji_rebus', block: 6, baseTime: 877 },
-{ id: 24, name: 'Истинно или ложно', planet: 'Веритас', type: 'true_false', block: 6, baseTime: 921 },
-{ id: 25, name: 'Смешанная логика', planet: 'Смекалия', type: 'logic_mix_1', block: 6, baseTime: 967 },
-{ id: 26, name: 'Задачи с подвохом', planet: 'Таиния', type: 'trick_question', block: 7, baseTime: 1015 },
-{ id: 27, name: 'Логические цепочки', planet: 'Катения', type: 'logic_chain', block: 7, baseTime: 1066 },
-{ id: 28, name: 'Пространство', planet: 'Ориентия', type: 'spatial', block: 7, baseTime: 1119 },
-{ id: 29, name: 'Загадки-смекалки', planet: 'Мистерия', type: 'riddle', block: 7, baseTime: 1175 },
-{ id: 30, name: 'Детективный экзамен', planet: 'Шерлокия', type: 'detective_mix', block: 7, baseTime: 1234 },
-{ id: 31, name: 'Сколько способов?', planet: 'Вариатия', type: 'combinatorics', block: 8, baseTime: 1296 },
-{ id: 32, name: 'Числовые головоломки', planet: 'Пазлия', type: 'number_puzzle', block: 8, baseTime: 1361 },
-{ id: 33, name: 'Задачи на внимание', planet: 'Атенция', type: 'attention', block: 8, baseTime: 1429 },
-{ id: 34, name: 'Космические загадки', planet: 'Арения', type: 'space_riddle', block: 8, baseTime: 1500 },
-{ id: 35, name: 'Цирковой экзамен', planet: 'Циркония', type: 'circus_mix', block: 8, baseTime: 1575 },
-{ id: 36, name: 'Логика + смекалка', planet: 'Аурум', type: 'logic_smekalka', block: 9, baseTime: 1654 },
-{ id: 37, name: 'Числа + закономерности', planet: 'Спиралия', type: 'number_pattern', block: 9, baseTime: 1737 },
-{ id: 38, name: 'Пространство + внимание', planet: 'Астерия', type: 'space_attention', block: 9, baseTime: 1824 },
-{ id: 39, name: 'Финальная разминка', planet: 'Лавария', type: 'final_warmup', block: 9, baseTime: 1915 },
+{ id: 1, name: 'Первый контакт', planet: 'Аэрис', type: 'visual_count', block: 1, baseTime: 600 },
+{ id: 2, name: 'Гравитационное поле', planet: 'Люмен', type: 'comparison', block: 1, baseTime: 630 },
+{ id: 3, name: 'Двойные звёзды', planet: 'Дуо', type: 'composition', block: 1, baseTime: 662 },
+{ id: 4, name: 'Слияние галактик', planet: 'Суммия', type: 'addition', block: 1, baseTime: 695, max: 10 },
+{ id: 5, name: 'Чёрная дыра', planet: 'Умбра', type: 'subtraction', block: 1, baseTime: 729, max: 10 },
+{ id: 6, name: 'Парад планет', planet: 'Процессия', type: 'visual_sequence', block: 2, baseTime: 766 },
+{ id: 7, name: 'Двойная система', planet: 'Бинита', type: 'place_value', block: 2, baseTime: 804 },
+{ id: 8, name: 'Световой скачок', planet: 'Люцида', type: 'addition_20', block: 2, baseTime: 844 },
+{ id: 9, name: 'Обратный отсчёт', planet: 'Ретрогра', type: 'subtraction_20', block: 2, baseTime: 886 },
+{ id: 10, name: 'Перекрёсток комет', planet: 'Комета', type: 'mixed_20', block: 2, baseTime: 931 },
+{ id: 11, name: 'Весы Вселенной', planet: 'Либра', type: 'difference', block: 3, baseTime: 977 },
+{ id: 12, name: 'Ускорение / Торможение', planet: 'Велоция', type: 'increase_decrease', block: 3, baseTime: 1026 },
+{ id: 13, name: 'Скрытая планета', planet: 'Целита', type: 'unknown', block: 3, baseTime: 1077 },
+{ id: 14, name: 'Симметрия мироздания', planet: 'Симметрия', type: 'parity', block: 3, baseTime: 1131 },
+{ id: 15, name: 'Ритм пульсара', planet: 'Пульсара', type: 'group_count', block: 3, baseTime: 1188 },
+{ id: 16, name: 'Грузовой корабль', planet: 'Каргона', type: 'text_problem_1', block: 4, baseTime: 1200 },
+{ id: 17, name: 'Двойная экспедиция', planet: 'Эксперия', type: 'text_problem_2', block: 4, baseTime: 1200 },
+{ id: 18, name: 'Станция «Метрология»', planet: 'Метрия', type: 'measurement', block: 4, baseTime: 1200 },
+{ id: 19, name: 'Карта созвездий', planet: 'Стелларис', type: 'geometry', block: 4, baseTime: 1200 },
+{ id: 20, name: 'Врата Андромеды', planet: 'Андария', type: 'andromeda_mix', block: 4, baseTime: 1200 },
+{ id: 21, name: 'Что лишнее?', planet: 'Кристаллия', type: 'odd_one_out', block: 6, baseTime: 1200 },
+{ id: 22, name: 'Закономерности', planet: 'Секвенция', type: 'pattern', block: 6, baseTime: 1200 },
+{ id: 23, name: 'Эмодзи-ребусы', planet: 'Ребусия', type: 'emoji_rebus', block: 6, baseTime: 1200 },
+{ id: 24, name: 'Истинно или ложно', planet: 'Веритас', type: 'true_false', block: 6, baseTime: 1200 },
+{ id: 25, name: 'Смешанная логика', planet: 'Смекалия', type: 'logic_mix_1', block: 6, baseTime: 1200 },
+{ id: 26, name: 'Задачи с подвохом', planet: 'Таиния', type: 'trick_question', block: 7, baseTime: 1200 },
+{ id: 27, name: 'Логические цепочки', planet: 'Катения', type: 'logic_chain', block: 7, baseTime: 1200 },
+{ id: 28, name: 'Пространство', planet: 'Ориентия', type: 'spatial', block: 7, baseTime: 1200 },
+{ id: 29, name: 'Загадки-смекалки', planet: 'Мистерия', type: 'riddle', block: 7, baseTime: 1200 },
+{ id: 30, name: 'Детективный экзамен', planet: 'Шерлокия', type: 'detective_mix', block: 7, baseTime: 1200 },
+{ id: 31, name: 'Сколько способов?', planet: 'Вариатия', type: 'combinatorics', block: 8, baseTime: 1200 },
+{ id: 32, name: 'Числовые головоломки', planet: 'Пазлия', type: 'number_puzzle', block: 8, baseTime: 1200 },
+{ id: 33, name: 'Задачи на внимание', planet: 'Атенция', type: 'attention', block: 8, baseTime: 1200 },
+{ id: 34, name: 'Космические загадки', planet: 'Арения', type: 'space_riddle', block: 8, baseTime: 1200 },
+{ id: 35, name: 'Цирковой экзамен', planet: 'Циркония', type: 'circus_mix', block: 8, baseTime: 1200 },
+{ id: 36, name: 'Логика + смекалка', planet: 'Аурум', type: 'logic_smekalka', block: 9, baseTime: 1200 },
+{ id: 37, name: 'Числа + закономерности', planet: 'Спиралия', type: 'number_pattern', block: 9, baseTime: 1200 },
+{ id: 38, name: 'Пространство + внимание', planet: 'Астерия', type: 'space_attention', block: 9, baseTime: 1200 },
+{ id: 39, name: 'Финальная разминка', planet: 'Лавария', type: 'final_warmup', block: 9, baseTime: 1200 },
 { id: 40, name: 'КОСМИЧЕСКИЙ ЭКЗАМЕН', planet: 'Корония', type: 'mega_boss', block: 10, baseTime: 2400 }
 ],
+// v4.11: уровень = время примера × 20 задач; экзамен = 60 × 40 = 2400
 getAdjustedTime(levelId) {
-if (levelId === 40) return 3000;
-return Math.min(2400, Math.round(300 * Math.pow(1.08, levelId - 1)));
+if (levelId === 40) return 2400;
+return Math.min(1200, this.getQuestionTime(levelId) * 20);
 },
 getPlanet(levelId) {
 return this.LEVELS[levelId - 1].planet;
 },
+// v4.11: пример 30 сек на 1 уровне, +5% за уровень, потолок 60 сек; экзамен 60 сек
 getQuestionTime(levelId) {
-if (levelId === 40) return 45;
-if (levelId > 20) return Math.min(75, Math.round(20 * Math.pow(1.08, levelId - 21)));
-return Math.min(60, Math.round(15 * Math.pow(1.08, levelId - 1)));
+if (levelId === 40) return 60;
+return Math.min(60, Math.round(30 * Math.pow(1.05, levelId - 1)));
 }
 };
 
@@ -1398,7 +1397,6 @@ ParticleSystem.init();
 DefinitionsManager.init();
 this.bindEvents();
 this.playIntroSplash();
-// Фаза 10: дозаправка очереди лидов при старте и при появлении сети
 LeadManager.flushQueue();
 window.addEventListener('online', () => LeadManager.flushQueue());
 },
@@ -1565,7 +1563,7 @@ if (all.length === 0) {
 list.innerHTML = '<div class="lb-empty">Пока нет пилотов. Стань первым!</div>';
 return;
 }
-const medals = ['🥇', '', '', '4️', '5️⃣'];
+const medals = ['\u{1F947}', '\u{1F948}', '\u{1F949}', '4\u{FE0F}\u{20E3}', '5\u{FE0F}\u{20E3}'];
 const topClasses = ['top-1', 'top-2', 'top-3', '', ''];
 all.forEach((p, i) => {
 const item = document.createElement('div');
@@ -1704,7 +1702,6 @@ badgeMsg.classList.add('hidden');
 const modal = document.getElementById('modal-daily');
 if (modal) modal.classList.remove('hidden');
 },
-// Фаза 10: открытие модалки лид-формы со сбросом сообщений
 openLeadModal() {
 const errEl = document.getElementById('lead-error');
 const okEl = document.getElementById('lead-success');
@@ -1765,7 +1762,7 @@ const player = StateManager.getPlayer(this.currentPlayer);
 if (gameLives) {
 let hearts = '';
 for (let i = 0; i < 3; i++) {
-hearts += i < player.lives ? '❤️' : '';
+hearts += i < player.lives ? '\u{2764}\u{FE0F}' : '\u{1F5A4}';
 }
 gameLives.textContent = hearts;
 }
@@ -2055,7 +2052,7 @@ const leaderboard = MotivationManager.getLeaderboard().slice(0, 5);
 if (leaderboard.length === 0) {
 lbList.innerHTML = '<p style="color: #a8d8ff; margin-top: 10px;">Пока нет рекордов. Сыграй первую игру!</p>';
 } else {
-const medals = ['🥇', '', '', '4️⃣', '5️⃣'];
+const medals = ['\u{1F947}', '\u{1F948}', '\u{1F949}', '4\u{FE0F}\u{20E3}', '5\u{FE0F}\u{20E3}'];
 leaderboard.forEach((entry, index) => {
 const div = document.createElement('div');
 div.className = `lb-item ${index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : ''}`;
@@ -2141,7 +2138,6 @@ AudioManager.playClick();
 GameManager.startMistakeTraining();
 });
 }
-// Фаза 10: лид-форма — открытие, закрытие, отправка
 if (btnLead) {
 btnLead.addEventListener('click', () => {
 AudioManager.init();

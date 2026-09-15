@@ -1,5 +1,4 @@
-// v4.12-pool: расширены пулы примеров (уровни 18–20 и повторы), параметрические генераторы,
-// фикс пустых эмодзи в visual (были '' в массивах эмодзи)
+// v4.12.1: геометрия — честные фигуры (⬠  ▭  вместо кругов); ВСЕ эмодзи юникод-эскейпами (защита от потери)
 const LEVELS = [
   { id: 1, name: 'Первый контакт', planet: 'Аэрис', type: 'visual_count', block: 1, baseTime: 300 },
   { id: 2, name: 'Гравитационное поле', planet: 'Люмен', type: 'comparison', block: 1, baseTime: 315 },
@@ -78,18 +77,18 @@ const numOptions = (correct, min, max) => {
 
 const getEmojiName = (emoji) => {
   const names = {
-    '🪐': 'планет',
-    '💎': 'кристаллов',
-    '🚀': 'ракет',
-    '⭐': 'звёзд',
-    '👽': 'инопланетян'
+    '\u{1FA90}': 'планет',
+    '\u{1F48E}': 'кристаллов',
+    '\u{1F680}': 'ракет',
+    '\u{2B50}': 'звёзд',
+    '\u{1F47D}': 'инопланетян'
   };
   return names[emoji] || 'объектов';
 };
 
 const generators = {
   visual_count: () => {
-    const emojis = ['🪐', '💎', '🚀', '⭐', '👽'];
+    const emojis = ['\u{1FA90}', '\u{1F48E}', '\u{1F680}', '\u{2B50}', '\u{1F47D}'];
     const emoji = pick(emojis);
     const count = randInt(3, 8);
     return {
@@ -138,7 +137,7 @@ const generators = {
     };
   },
   visual_sequence: () => {
-    const emojis = ['🪐', '💎', '🚀', '⭐', '👽'];
+    const emojis = ['\u{1FA90}', '\u{1F48E}', '\u{1F680}', '\u{2B50}', '\u{1F47D}'];
     const emoji = pick(emojis);
     const count = randInt(10, 18);
     return {
@@ -239,13 +238,13 @@ const generators = {
   },
   text_problem_1: () => {
     const problems = [
-      (a, b) => ({ story: `На станции было ${a} 🚀. Прилетело ещё ${b} 🚀. Сколько стало?`, answer: a + b }),
-      (a, b) => ({ story: `В пещере нашли ${a} 💎. Потеряли ${b} 💎. Сколько осталось?`, answer: a - b }),
-      (a, b) => ({ story: `У инопланетян было ${a} 👽. Прибыло ещё ${b} 👽. Сколько всего?`, answer: a + b }),
-      (a, b) => ({ story: `На орбите ${a} 🪐. Прилетело ещё ${b} 🪐. Сколько всего?`, answer: a + b }),
-      (a, b) => ({ story: `В трюме было ${a} ⭐. Погрузили ещё ${b} ⭐. Сколько стало?`, answer: a + b }),
-      (a, b) => ({ story: `Экипаж съел ${a} 🍎 из ${a + b}. Сколько осталось?`, answer: b }),
-      (a, b) => ({ story: `У Ани ${a} 🎈, у Бори ${b} 🎈. Сколько всего?`, answer: a + b }),
+      (a, b) => ({ story: `На станции было ${a} \u{1F680}. Прилетело ещё ${b} \u{1F680}. Сколько стало?`, answer: a + b }),
+      (a, b) => ({ story: `В пещере нашли ${a} \u{1F48E}. Потеряли ${b} \u{1F48E}. Сколько осталось?`, answer: a - b }),
+      (a, b) => ({ story: `У инопланетян было ${a} \u{1F47D}. Прибыло ещё ${b} \u{1F47D}. Сколько всего?`, answer: a + b }),
+      (a, b) => ({ story: `На орбите ${a} \u{1FA90}. Прилетело ещё ${b} \u{1FA90}. Сколько всего?`, answer: a + b }),
+      (a, b) => ({ story: `В трюме было ${a} \u{2B50}. Погрузили ещё ${b} \u{2B50}. Сколько стало?`, answer: a + b }),
+      (a, b) => ({ story: `Экипаж съел ${a} \u{1F34E} из ${a + b}. Сколько осталось?`, answer: b }),
+      (a, b) => ({ story: `У Ани ${a} \u{1F388}, у Бори ${b} \u{1F388}. Сколько всего?`, answer: a + b }),
       (a, b) => ({ story: `Робот сделал ${a} шага и ещё ${b}. Сколько всего шагов?`, answer: a + b })
     ];
     const gen = pick(problems);
@@ -261,7 +260,7 @@ const generators = {
   },
   text_problem_2: () => {
     const a = randInt(4, 8), b = randInt(1, Math.min(3, a - 1));
-    const emojis = ['🚀', '💎', '🪐'];
+    const emojis = ['\u{1F680}', '\u{1F48E}', '\u{1FA90}'];
     const emoji = pick(emojis);
     const isLess = Math.random() < 0.5;
     const blue = isLess ? a - b : a + b;
@@ -301,7 +300,9 @@ const generators = {
   },
   geometry: () => {
     if (Math.random() < 0.2) {
-      const shape = Math.random() < 0.5 ? { name: 'круга', emoji: '⭕' } : { name: 'овала', emoji: '⚪' };
+      const shape = Math.random() < 0.5
+        ? { name: 'круга', emoji: '\u{2B55}' }
+        : { name: 'овала', emoji: '\u{2B2D}' };
       return {
         type: 'geometry',
         question: `Сколько углов у ${shape.name}?`,
@@ -311,12 +312,12 @@ const generators = {
       };
     }
     const polys = [
-      { name: 'треугольника', n: 3, emoji: '🔺' },
-      { name: 'квадрата', n: 4, emoji: '🟥' },
-      { name: 'прямоугольника', n: 4, emoji: '⬜' },
-      { name: 'ромба', n: 4, emoji: '🔶' },
-      { name: 'пятиугольника', n: 5, emoji: '🟠' },
-      { name: 'шестиугольника', n: 6, emoji: '🟡' }
+      { name: 'треугольника', n: 3, emoji: '\u{1F53A}' },
+      { name: 'квадрата', n: 4, emoji: '\u{1F7E5}' },
+      { name: 'прямоугольника', n: 4, emoji: '\u{25AD}' },
+      { name: 'ромба', n: 4, emoji: '\u{1F536}' },
+      { name: 'пятиугольника', n: 5, emoji: '\u{2B20}' },
+      { name: 'шестиугольника', n: 6, emoji: '\u{2B21}' }
     ];
     const props = ['углов', 'сторон', 'вершин'];
     const p = pick(polys);
@@ -335,16 +336,16 @@ const generators = {
   },
   odd_one_out: () => {
     const categories = [
-      { items: ['🍎', '', '🍇'], odd: '🚀' },
-      { items: ['🐶', '', ''], odd: '' },
-      { items: ['🔺', '🟥', ''], odd: '⭕' },
-      { items: ['🌞', '☄️', '🌟'], odd: '🍕' },
-      { items: ['🎸', '🎹', ''], odd: '🚀' },
-      { items: ['🥕', '', ''], odd: '🍰' },
-      { items: ['⚽', '', ''], odd: '📘' },
-      { items: ['🚗', '', '🚲'], odd: '🌳' },
-      { items: ['🐟', '🐬', ''], odd: '🦅' },
-      { items: ['❄️', '🌧️', '🌈'], odd: '🍎' }
+      { items: ['\u{1F34E}', '\u{1F34A}', '\u{1F347}'], odd: '\u{1F680}' },
+      { items: ['\u{1F436}', '\u{1F431}', '\u{1F42D}'], odd: '\u{1F680}' },
+      { items: ['\u{1F53A}', '\u{1F7E5}', '\u{1F536}'], odd: '\u{2B55}' },
+      { items: ['\u{1F31E}', '\u{2604}\u{FE0F}', '\u{1F31F}'], odd: '\u{1F355}' },
+      { items: ['\u{1F3B8}', '\u{1F3B9}', '\u{1F3BB}'], odd: '\u{1F680}' },
+      { items: ['\u{1F955}', '\u{1F33D}', '\u{1F966}'], odd: '\u{1F370}' },
+      { items: ['\u{26BD}', '\u{1F3C0}', '\u{1F3BE}'], odd: '\u{1F4D8}' },
+      { items: ['\u{1F697}', '\u{1F68C}', '\u{1F6B2}'], odd: '\u{1F333}' },
+      { items: ['\u{1F41F}', '\u{1F42C}', '\u{1F433}'], odd: '\u{1F985}' },
+      { items: ['\u{2744}\u{FE0F}', '\u{1F327}\u{FE0F}', '\u{1F308}'], odd: '\u{1F34E}' }
     ];
     const cat = pick(categories);
     const visual = shuffle([...cat.items, cat.odd]);
@@ -381,7 +382,7 @@ const generators = {
     const k = Math.random() < 0.7 ? 2 : 3;
     const a = randInt(2, 6);
     const sum = a * k;
-    const emojis = ['🚀', '', '⭐', '', '💎'];
+    const emojis = ['\u{1F680}', '\u{1F34E}', '\u{2B50}', '\u{1F47D}', '\u{1F48E}'];
     const emoji = pick(emojis);
     const left = Array(k).fill(emoji).join(' + ');
     return {

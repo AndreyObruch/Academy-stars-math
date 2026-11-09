@@ -1,4 +1,35 @@
+# Зависимости (Amvera соберёт в Docker-образе)
 node_modules/
-server/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Секреты и локальные env (токены MAX — только в панели Amvera!)
+.env
+.env.local
+.env.*.local
+
+# Логи и кэш
+logs/
 *.log
+.cache/
+tmp/
+temp/
+
+# Данные БД (если появится локальная)
+*.sqlite
+*.db
+data/
+
+# ОС и редакторы
 .DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*~
+
+# Сборка
+dist/
+build/

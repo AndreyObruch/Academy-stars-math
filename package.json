@@ -1,9 +1,15 @@
 {
   "name": "academy-stars-math",
-  "version": "4.1.0",
-  "private": true,
-  "type": "commonjs",
+  "version": "4.12.1",
+  "description": "Академия Звёздных Математиков — образовательная игра (Node.js + Express)",
+  "main": "server/app.js",
+  "scripts": {
+    "start": "node server/app.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^4.21.2"
   }
 }

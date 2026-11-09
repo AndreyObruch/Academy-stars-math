@@ -1,0 +1,2 @@
+# Amvera: явная конфигурация сборки через Dockerfile (Node 20, порт из env PORT)
+type: docker

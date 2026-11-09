@@ -1,11 +1,14 @@
 meta:
-  environment: docker
+  environment: nodejs
   toolchain:
-    name: docker
+    name: npm
+    version: "20"
 build:
-  dockerfile: Dockerfile
   skip: false
+  artifacts:
+    "*": /
 run:
+  command: npm run start
   persistenceMount: /data
   containerPort: "3000"
   singleton: true
